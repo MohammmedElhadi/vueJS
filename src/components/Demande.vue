@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card class="pa-2 mx-auto elevation-5" outlined>
-      <v-card-title>Demande n° : #{{ demande.demande.id }}</v-card-title>
+      <v-card-title >{{$t('Demande_n')}} {{ demande.demande.id }}</v-card-title>
       <v-card-text>
         <v-row align-content="center">
           <v-col md="8" lg="8" xl="8" cols="12">
@@ -74,13 +74,13 @@
         </v-row>
       </v-card-text>
     
-    <v-expansion-panels >
+    <v-expansion-panels>
       <v-expansion-panel>
         <v-expansion-panel-header v-if="owner" @click="show_detail = true">
           Afficher les Offres</v-expansion-panel-header
         >
         <v-expansion-panel-header v-else @click="show_detail = true">
-          Proposer Une pièce</v-expansion-panel-header
+         {{$t('proposer')}}</v-expansion-panel-header
         >
         <offers-list 
           v-if="owner && show_detail"

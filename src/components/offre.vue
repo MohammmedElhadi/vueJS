@@ -9,7 +9,7 @@
             :items="wilayas"
             item-text="name"
             item-value="id"
-            label="Votre wilaya"
+            :label="$t('wilaya')"
             prepend-icon="mdi-google-maps"
             :rules="wilayaRules"
             v-model="offer.wilaya_id"
@@ -26,7 +26,7 @@
             :items="etats"
             item-text="nom_fr"
             item-value="id"
-            label="Etat de la pièce"
+            :label="$t('etat')"
             prepend-icon="mdi-circle"
             :rules="etatRules"
             v-model="offer.etat_id"
@@ -37,24 +37,24 @@
 
       <v-text-field
         dense
-        placeholder="Prix offert"
+        :placeholder="$t('prix')"
         v-model="offer.prix_offert"
         prepend-icon="mdi-currency-usd"
         :rules="prixRules"
-        suffix="DZD"
+        :suffix="$t('DZD')"
       ></v-text-field>
       <v-textarea
         clearable
         auto-grow
         dense
         clear-icon="mdi-close-circle"
-        label="Description"
+        :label="$t('description')"
         prepend-icon="mdi-note"
         v-model="offer.note"
       ></v-textarea>
       <v-col cols="12">
         <v-file-input
-          label="Photos de la pièce"
+          :label="$t('photo')"
           prepend-icon="mdi-camera"
           multiple
           show-size
@@ -77,7 +77,7 @@
         :disabled="disabled"
         @click="SubmitOffer()"
       >
-        Repondre
+        {{$t('repondre')}}
       </v-btn>
       <v-dialog  v-if="offer.id" v-model="delete_dialog" width="500">
         <template v-slot:activator="{ on, attrs }">
@@ -92,7 +92,7 @@
             v-bind="attrs"
             v-on="on"
           >
-            retirer
+            {{$t('retirer')}}
           </v-btn>
         </template>
 

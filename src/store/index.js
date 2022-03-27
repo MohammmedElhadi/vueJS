@@ -21,6 +21,7 @@ const store = new Vuex.Store({
         SET_ETATS(state , etats){
            state.etats = etats;
        },
+
     },
     actions :{
         async loadWilayas({commit}){
@@ -30,7 +31,7 @@ const store = new Vuex.Store({
         async loadEtats({commit}){
             let response = await HTTP.get('api/etat');
             commit('SET_ETATS' , response.data);
-        }
+        },
     },
     modules :{auth }
 })

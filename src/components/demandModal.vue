@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" max-width="90%">
+    <v-dialog v-model="demande_dialog" max-width="90%">
       <template v-slot:activator="{ on, attrs }">
         <v-btn small fab v-bind="attrs" right v-on="on" color="primary">
           <v-icon>mdi-plus</v-icon>
@@ -37,8 +37,8 @@
                 </v-stepper-header>
                 <v-stepper-items>
                   <v-stepper-content step="1">
-                    <v-row dense>
-                      <v-col cols="12">
+                    <v-row dense class="justify-center">
+                      <v-col cols="12" xl="10" lg="10" md="10">
                         <!-- Type -->
                         <v-autocomplete
                           :items="types"
@@ -52,7 +52,7 @@
                         >
                         </v-autocomplete>
                       </v-col>
-                      <v-col cols="12">
+                      <v-col cols="12" xl="10" lg="10" md="10">
                         <!-- marques -->
                         <v-autocomplete
                           multiple
@@ -80,7 +80,7 @@
                           </template>
                         </v-autocomplete>
                       </v-col>
-                      <v-col cols="12">
+                      <v-col cols="12" xl="10" lg="10" md="10">
                         <!-- modeles -->
                         <v-autocomplete
                           :items="modeles"
@@ -106,7 +106,7 @@
                           </template>
                         </v-autocomplete>
                       </v-col>
-                      <v-col cols="12">
+                      <v-col cols="12" xl="10" lg="10" md="10">
                         <v-file-input
                           label="Photos de la pièce"
                           prepend-icon="mdi-camera"
@@ -117,14 +117,14 @@
                           v-model="image"
                         />
                       </v-col>
-                      <v-col cols="12">
+                      <v-col cols="12" xl="10" lg="10" md="10">
                         <v-img max-width="200" v-if="url" :src="url"></v-img>
                       </v-col>
                     </v-row>
                   </v-stepper-content>
                   <v-stepper-content step="2">
-                    <v-row dense>
-                      <v-col cols="12">
+                    <v-row dense class="justify-center">
+                      <v-col cols="12" xl="10" lg="10" md="10">
                         <!-- categories -->
                         <v-autocomplete
                           :items="categories"
@@ -151,7 +151,7 @@
                           </template>
                         </v-autocomplete>
                       </v-col>
-                      <v-col cols="12">
+                      <v-col cols="12" xl="10" lg="10" md="10">
                         <!-- subcategories -->
                         <v-autocomplete
                           :items="subcategories"
@@ -177,7 +177,7 @@
                           </template>
                         </v-autocomplete>
                       </v-col>
-                      <v-col cols="12">
+                      <v-col cols="12" xl="10" lg="10" md="10">
                         <!-- subsubcategories -->
                         <v-autocomplete
                           :items="subsubcategories"
@@ -204,9 +204,9 @@
                       </v-col>
                     </v-row>
                   </v-stepper-content>
-                  <v-stepper-content step="3">
-                    <v-row dense>
-                      <v-col cols="12">
+                  <v-stepper-content step="3" >
+                    <v-row dense  class="justify-center">
+                      <v-col cols="12" xl="10" lg="10" md="10">
                         <!-- notes -->
                         <v-textarea
                           clearable
@@ -217,7 +217,7 @@
                           v-model="demand.note"
                         ></v-textarea>
                       </v-col>
-                      <v-col cols="12">
+                      <v-col cols="12" xl="10" lg="10" md="10">
                         <!-- wilaya -->
                         <v-autocomplete
                           :items="wilayas"
@@ -234,7 +234,7 @@
                           </template>
                         </v-autocomplete>
                       </v-col>
-                      <v-col cols="12">
+                      <v-col cols="12" xl="10" lg="10" md="10">
                         <!-- etat -->
                         <v-autocomplete
                           :items="etats"
@@ -243,6 +243,7 @@
                           item-value="id"
                           label="Etat de la pièce"
                           required
+                          prepend-icon="mdi-circle"
                           v-model="demand.etat"
                         >
                         </v-autocomplete>
@@ -295,9 +296,8 @@ export default {
     categoryRules: [(v) => v.length != 0 || "category is required"],
     wilayaRules: [(v) => !!v || "wilaya is required"],
     etatRules: [(v) => !!v || "Etat is required"],
-
     e1: 1,
-    dialog: false,
+    demande_dialog: false,
     demand: {
       type: "",
       marques: [],
@@ -409,10 +409,10 @@ export default {
 
       if (this.$store.state.auth.authenticated) {
         if (this.$refs.form.validate()) {
-          HTTP.post("api/demande", this.demand, config)
+          HTTP.post("api/demande", data, config)
             .then((response) => {
               if (response.status == 200) {
-                this.dialog = false;
+                this.demande_dialog = false;
                 this.$toasted.success("Demande créée avec succés!", {
                   theme: "bubble",
                   position: "top-center",

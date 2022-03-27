@@ -1,7 +1,7 @@
 <template>
   <v-card class="mx-auto" width="800">
     <v-card-title >
-      Notifications
+      {{$t('notifications')}}
       <v-spacer></v-spacer>
     </v-card-title>
     <v-divider></v-divider>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-dialog v-model="dialog" max-width="100%">
+    <v-dialog v-model="dialog" max-width="800px">
       <template v-slot:activator="{ on, attrs }">
         <v-btn text class="my-2" block v-bind="attrs" right v-on="on" outlined>
           Se connecter

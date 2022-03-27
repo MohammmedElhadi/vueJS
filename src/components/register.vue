@@ -14,7 +14,6 @@
           <v-spacer/>
            <v-btn
               icon
-              dark
               @click="dialog = false"
             >
               <v-icon>mdi-close</v-icon>
@@ -23,7 +22,7 @@
         <v-stepper v-model="e1">
           <v-card-text>
             <v-container>
-              <v-stepper-header>
+              <v-stepper-header >
                 <v-stepper-step :complete="e1 > 1" step="1">
                   Information de contact
                 </v-stepper-step>

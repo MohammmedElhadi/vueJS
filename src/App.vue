@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer v-model="drawer" app clipped>
+    <v-navigation-drawer v-model="drawer" app clipped :right="$vuetify.rtl">
       <v-list dense>
         <v-list-item v-if="auth">
           <v-list-item-action> 
@@ -33,7 +33,7 @@
             <v-icon>mdi-file-document-multiple</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Mes Demandes</v-list-item-title>
+            <v-list-item-title>{{$t('mes_demandes')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item v-if="auth" link :to="{ name: 'demandes-vues' }">
@@ -41,7 +41,7 @@
             <v-icon>mdi-file-eye</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Demandes vues </v-list-item-title>
+            <v-list-item-title>{{$t('demandes_vues')}} </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item v-if="auth" link :to="{ name: 'demandes-aime' }">
@@ -49,14 +49,14 @@
             <v-icon>mdi-heart</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Demandes aimées</v-list-item-title>
+            <v-list-item-title>{{$t('demandes_aime')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item v-if="auth" @click="logout">
           <v-list-item-action>
             <v-btn v-if="auth" icon><v-icon>mdi-logout</v-icon></v-btn>
           </v-list-item-action>
-          <v-list-item-title>Se déconnecter</v-list-item-title>
+          <v-list-item-title>{{$t('deconnecter')}}</v-list-item-title>
         </v-list-item>
         <v-list-item v-else>
           <v-list-item-title>
@@ -65,7 +65,23 @@
           </v-list-item-title>
         </v-list-item>
         <v-list-item>
-          <v-switch v-model="$vuetify.theme.dark" label="dark"></v-switch>
+          <v-switch v-model="$vuetify.theme.dark" :label="$t('dark_mode')"></v-switch>
+          <v-spacer/>
+          <!-- Language  -->
+          <v-menu v-model="languageMenu" offset-y>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn class="text-capitalize" v-bind="attrs" v-on="on" text>
+                  <v-icon left>mdi-earth</v-icon>
+                  {{ activeLang }}
+                  <v-icon small right>mdi-menu-down</v-icon>
+                </v-btn>
+              </template>
+              <v-list dense>
+                <v-list-item v-for="(lang, index) in langs" :key="index" @click="handleMenuItemClick(lang)">
+                  <v-list-item-title>{{ lang.title }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -120,6 +136,13 @@ export default {
     Notificationssource: String,
   },
   data: () => ({
+     langs: [
+        { title: 'Français', abr:'fr' , rtl : false },
+        { title: 'العربية', abr: 'ar', rtl : true }
+      ],
+    activeLang: 'Français',
+    dialog: false,
+    languageMenu: false,
     drawer: null,
     notifications: null,
     notificationKey: 0,
@@ -141,6 +164,7 @@ export default {
       HTTP.get("api/notification")
         .then((response) => {
           this.notifications = response.data;
+          console.log(this.notifications)
         })
         .catch((error) => {
           console.log(error);
@@ -164,6 +188,18 @@ export default {
       this.logged_user = this.$store.state.auth.user;
       this.auth = this.$store.state.auth.authenticated;
     },
+    initLanguage(){
+      let lang = this.langs.find(
+        (item) => item.abr == this.$i18n.locale
+      );
+       this.activeLang = lang.title
+       this.$vuetify.rtl = lang.rtl
+    },
+    handleMenuItemClick(lang){
+      this.activeLang = lang.title;
+      this.$i18n.locale = lang.abr
+      this.$vuetify.rtl = lang.rtl
+    }
   },
   computed: {
     auth() {
@@ -177,6 +213,7 @@ export default {
     },
   },
   created() {
+    this.initLanguage();
     this.$store.dispatch("auth/login");
     this.$vuetify.theme.dark = true;
     this.getNotifications();
@@ -186,6 +223,20 @@ export default {
              this.notifications.unshift({"demande" : demande ,
                                           'type' : demande.types[0] }
                                         );
+              this.$toasted.show("une demande a été ajoutée !!", {
+                      theme: ["bubble" , 'info'],
+                      position: "botom-center",
+                      duration: 5000,
+                      keepOnHover: true,
+                      action: [
+                          {
+                              text: 'Cancel',
+                              onClick: (e, toastObject) => {
+                                  toastObject.goAway(0);
+                              }
+                          }
+                      ]
+                  });
              this.forceRerenderNotifications();
         });
       
