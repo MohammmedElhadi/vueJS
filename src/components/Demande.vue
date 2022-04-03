@@ -130,7 +130,7 @@
           </v-col>
 
           <v-col md="4" lg="4" xl="4" cols="12">
-            <v-carousel height="300" v-if="demande.images.length > 0" touch>
+            <v-carousel height="300" v-if="demande.images.length > 0" >
               <v-carousel-item
                 v-for="(image, i) in demande.images"
                 :key="i"
@@ -197,6 +197,7 @@ export default {
   data: () => ({
     show: true,
     show_detail: false,
+    delete_dialog : false
   }),
   computed: {
     sinse() {
@@ -249,7 +250,7 @@ export default {
             this.show = false;
             this.$toasted.danger("Demande supprimée  avec succés", {
               theme: ["bubble", "outlined"],
-              position: "top-center",
+              position: "top-right",
               duration: 5000,
             });
           }

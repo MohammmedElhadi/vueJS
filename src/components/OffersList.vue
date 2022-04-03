@@ -3,28 +3,39 @@
     <v-expansion-panel-content>
       <v-dialog v-model="dialog" width="800"  >
         <v-card>
-          <v-card-title> Détail de l'offre </v-card-title>
+          <v-card-title> {{$t('detail_offer')}} </v-card-title>
 
           <v-card-text>
              <v-row>
               <v-col cols="6" >
-            Wilaya : <v-chip small>{{ offer.wilaya }}</v-chip>
+            {{$t('wilaya')}} : <v-chip small>{{ offer.wilaya }}</v-chip>
             <br>
             <br>
-            Etat   : <v-chip small>{{ offer.etat }}</v-chip>
+            {{$t('etat')}} : <v-chip small>{{ offer.etat }}</v-chip>
             <br>
             <br>
-            Description : {{offer.note}}
+             {{$t('tel')}}  :    <v-chip small> <a :href="'tel:'+offer.phone">{{offer.phone}}</a></v-chip>     
             <br>
-            Telephone :         
-           <v-chip small> <a :href="'tel:'+offer.phone">{{offer.phone}}</a></v-chip>
+            <br>
+             {{$t('note')}} : 
+             <br>
+             {{offer.note}}
+         
               </v-col>
 
         <v-col cols="6">
-          <v-img max-width="200" v-if="offer.image" :src="offer.image"></v-img>
+             <v-carousel height="300" v-if="offer.images.length > 0" touch>
+              <v-carousel-item
+                v-for="(image, i) in offer.images"
+                :key="i"
+                :src="image.imageURL"
+              ></v-carousel-item>
+            </v-carousel>
         </v-col>
              </v-row>
           </v-card-text>
+          
+          
           <v-divider></v-divider>
 
           <v-card-actions>
@@ -35,10 +46,10 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-data-table :loading="loading"
+      <v-data-table 
         :headers="headers"
         :items="offers"
-        :items-per-page="5"
+        :items-per-page="10"
         class="elevation-1"
       >
         <template v-slot:body="{ items }">
@@ -63,10 +74,10 @@ export default {
     dialog: false,
     loading: false,
     headers: [
-      { text: "Wilaya", value: "reponse.wilaya_id" },
-      { text: "Etat", value: "reponse.nom_etat" },
-      { text: "Prix", value: "reponse.prix_offert" },
-      { text: "num telephone"},
+    { text: "Wilaya"},
+      { text: "Etat"},
+      { text: "Prix"},
+      { text: "Phone"},
     ],
     offers: [],
     offer: {
@@ -75,16 +86,18 @@ export default {
       Prix: "",
       note : "",
       phone: "",
-      image : "",
+      images : "",
     },
   }),
   methods: {
     getOffers() {
+      
       this.loading = true;
       HTTP.get("api/reponse/" + this.demande_id + "/all")
         .then((response) => {
           if (response.status == 200) {
             this.offers = response.data;
+            console.log(this.offers)
             this.loading = false;
           } else return;
         })
@@ -99,12 +112,14 @@ export default {
       this.offer.etat =  it.reponse.etat.nom_fr
       this.offer.note =  it.reponse.note
       this.offer.phone =  it.phone
-      this.offer.image =  it.image
+      this.offer.images =  it.images
       console.log(it.image);
       this.dialog = true;
     },
   },
   mounted() {
+    console.log(this.demande_id)
+    console.log(this.offers)
     this.getOffers();
   },
 };

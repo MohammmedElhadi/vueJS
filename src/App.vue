@@ -182,7 +182,6 @@ export default {
           this.notifications = response.data;
           if (this.notifications)
             this.notificationKey = this.notifications.count;
-          console.log(this.notifications.notifications[0]);
         })
         .catch((error) => {
           console.log(error);

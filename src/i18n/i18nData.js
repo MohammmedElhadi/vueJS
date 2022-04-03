@@ -32,6 +32,7 @@ export default {
     show_offers     : 'Afficher les Offres',
     offer_created_success : 'Votre offre a été enregistré',
     delete_offer             : "Supprimer l'offre"  ,
+    detail_offer             : "Détail de l'offre"  ,
     //demande
     new_demand      : 'Nouvelle demande',
     Marque_modele      :  'Marque et modele de véhicule',
@@ -104,6 +105,8 @@ export default {
     offer_demand         :   'عرض جديد على الطلب',    
     close                :'إغلاق',
     show_offers     : 'جميع العروض',
+    detail_offer             : "تفاصيل العرض"  ,
+
     //demande
     new_demand      : 'طلب جديد',
     Marque_modele      :  'العلامة والموديل',
