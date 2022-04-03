@@ -45,10 +45,18 @@
         </v-list-item>
         <v-list-item v-if="auth" link :to="{ name: 'demandes-aime' }">
           <v-list-item-action>
-            <v-icon>mdi-heart</v-icon>
+            <v-icon>mdi-bookmark</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>{{ $t("loved_demands") }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="auth" link :to="{ name: 'demandes-repondue' }">
+          <v-list-item-action>
+            <v-icon>mdi-check</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t("responded_demands") }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item v-if="auth" @click="logout">

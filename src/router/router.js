@@ -4,6 +4,7 @@ import DemandesList from '../views/DemandesList'
 import MyDemandesList from '../views/MyDemandesList'
 import DemandesAime from '../views/DemandesAime'
 import DemandesVues from '../views/DemandesVues'
+import DemandesRepondue from '../views/DemandesRepondue'
 import detail from "../views/detail";
 import profile from "../views/profile";
 
@@ -39,6 +40,11 @@ const routes = [
         path: '/demande/DemandesAime',
         name: 'demandes-aime',
         component: DemandesAime
+    },
+    {
+        path: '/demande/DemandesRepondue',
+        name: 'demandes-repondue',
+        component: DemandesRepondue
     },
 
     {

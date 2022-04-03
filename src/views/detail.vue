@@ -12,12 +12,13 @@ export default {
   name: "detail",
   data: () => ({
     detail : true,
-    demande: "",
+    demande: null,
   }),
-  mounted(){
+  beforeMount(){
     this.getDemande();
   },
   created() {
+    
     this.$watch(
       () => this.$route.params,
       (toParams) => {

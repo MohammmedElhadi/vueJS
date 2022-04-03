@@ -58,7 +58,11 @@ Vue.use(VueEcho, {
 });
 
 /*********************************/
+Vue.component('filepond-component', require('./components/FilepondComponent.vue').default);
+/*********************************/
+// Vue.component('image-box ', 'vue-image-box');
 
+/*********************************/
 new Vue({
   vuetify,
   router,

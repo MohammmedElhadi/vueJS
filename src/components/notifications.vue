@@ -21,7 +21,7 @@
                             </v-avatar>
                         </v-list-item-avatar>
           <v-list-item-content >
-            <v-list-item-title  v-resize-text ="{ratio:1 , minFontSize: '5px', maxFontSize: '14px'}"
+            <v-list-item-title  v-resize-text ="{ratio:1 , minFontSize: '14px', maxFontSize: '14px'}"
               >{{ item.type=='App\\Notifications\\ReponseNotification' ? 
                   $t('offer_demand')+ item.data.demande.id+' , '+$t('wilaya') +' '+ $store.state.wilayas.find((itemf) => itemf.id == item.data.reponse.wilaya_id).name  : $t('conserne_demand_from')+ $store.state.wilayas.find((itemf) => itemf.id == item.data.demande.wilaya_id).name }}</v-list-item-title
             >

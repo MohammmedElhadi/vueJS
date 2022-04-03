@@ -1,118 +1,109 @@
 <template>
   <div>
     <v-form ref="form" class="mx-2" lazy-validation>
-    <v-expansion-panel-content>
-      <v-row>
-        <v-col ols="12">
-          <v-autocomplete
-            dense
-            :items="wilayas"
-            item-text="name"
-            item-value="id"
-            :label="$t('wilaya')"
-            prepend-icon="mdi-google-maps"
-            :rules="wilayaRules"
-            v-model="offer.wilaya_id"
-          >
-            <template v-slot:item="slotProps"
-              >{{ slotProps.item.code }}-{{ slotProps.item.name }}
-            </template>
-          </v-autocomplete>
-        </v-col>
+      <v-expansion-panel-content>
+        <v-row>
+          <v-col ols="12">
+            <v-autocomplete
+              dense
+              :items="wilayas"
+              item-text="name"
+              item-value="id"
+              :label="$t('wilaya')"
+              prepend-icon="mdi-google-maps"
+              :rules="wilayaRules"
+              v-model="offer.wilaya_id"
+            >
+              <template v-slot:item="slotProps"
+                >{{ slotProps.item.code }}-{{ slotProps.item.name }}
+              </template>
+            </v-autocomplete>
+          </v-col>
+          <v-col cols="12">
+            <!-- etat -->
+            <v-autocomplete
+              dense
+              :items="etats"
+              item-text="nom_fr"
+              item-value="id"
+              :label="$t('etat')"
+              prepend-icon="mdi-circle"
+              :rules="etatRules"
+              v-model="offer.etat_id"
+            >
+            </v-autocomplete>
+          </v-col>
+        </v-row>
+
+        <v-text-field
+          dense
+          :placeholder="$t('prix')"
+          v-model="offer.prix_offert"
+          prepend-icon="mdi-currency-usd"
+          :rules="prixRules"
+          :suffix="$t('DZD')"
+        ></v-text-field>
+        <v-textarea
+          clearable
+          auto-grow
+          dense
+          clear-icon="mdi-close-circle"
+          :label="$t('description')"
+          prepend-icon="mdi-note"
+          v-model="offer.note"
+        ></v-textarea>
         <v-col cols="12">
-          <!-- etat -->
-          <v-autocomplete
-            dense
-            :items="etats"
-            item-text="nom_fr"
-            item-value="id"
-            :label="$t('etat')"
-            prepend-icon="mdi-circle"
-            :rules="etatRules"
-            v-model="offer.etat_id"
-          >
-          </v-autocomplete>
+          <filepond-component
+            v-show="!has_offer"
+            @filePondItemUploaded="demandImageUploaded($event)"
+            @filePondItemDeleted="demandImageDeleted($event)"
+          />
         </v-col>
-      </v-row>
-
-      <v-text-field
-        dense
-        :placeholder="$t('prix')"
-        v-model="offer.prix_offert"
-        prepend-icon="mdi-currency-usd"
-        :rules="prixRules"
-        :suffix="$t('DZD')"
-      ></v-text-field>
-      <v-textarea
-        clearable
-        auto-grow
-        dense
-        clear-icon="mdi-close-circle"
-        :label="$t('description')"
-        prepend-icon="mdi-note"
-        v-model="offer.note"
-      ></v-textarea>
-      <v-col cols="12">
-        <v-file-input
-          :label="$t('photo')"
-          prepend-icon="mdi-camera"
-          multiple
-          show-size
-          @change="showPhoto"
-          accept="image/*"
-          v-model="offer.image"
-        />
-      </v-col>
-      <v-col cols="12">
-        <v-img max-width="200" v-if="offer.url" :src="offer.url"></v-img>
-      </v-col>
-
-      <v-btn
-        dense
-        fa-flip-horizontal
-        outlined
-        rounded
-        text
-        color="success"
-        :disabled="disabled"
-        @click="SubmitOffer()"
-      >
-        {{$t('responde')}}
-      </v-btn>
-      <v-dialog  v-if="offer.id" v-model="delete_dialog" width="500">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-           
-            dense
-            fa-flip-horizontal
-            rounded
-            text
-            color="red"
-            :disabled="!disabled"
-            v-bind="attrs"
-            v-on="on"
-          >
-            {{$t('remove_offer')}}
-          </v-btn>
-        </template>
-
-        <v-card>
-          <v-card-title dark class="text-h7 red lighten-2 justify-center">
-            Vous voulez supprimer cet offer
-          </v-card-title>
-
-          <v-card-text> cette oppération est permanente </v-card-text>
-          <v-divider></v-divider>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="red darken-2" text @click="retirerOffer">
-              Oui supprimer
+        <v-btn
+          dense
+          fa-flip-horizontal
+          outlined
+          rounded
+          text
+          color="success"
+          :disabled="disabled"
+          @click="SubmitOffer()"
+        >
+          {{ $t("responde") }}
+        </v-btn>
+        <v-dialog v-if="offer.id" v-model="delete_dialog" width="500">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              dense
+              fa-flip-horizontal
+              rounded
+              text
+              color="red"
+              :disabled="!disabled"
+              v-bind="attrs"
+              v-on="on"
+            >
+              {{ $t("remove_offer") }}
             </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-expansion-panel-content>
+          </template>
+
+          <v-card>
+            <v-card-title dark class="text-h7 red darken-3 justify-center">
+               {{$t('are_you_sur')}}
+            </v-card-title>
+
+            <v-card-text> {{$t('this_is_not_reversible')}}</v-card-text>
+            <v-divider></v-divider>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="red darken-2" text @click="retirerOffer">
+                {{$t('yes_delete')}}
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-expansion-panel-content>
     </v-form>
   </div>
 </template>
@@ -121,10 +112,9 @@ import { HTTP } from "../http-constants";
 export default {
   props: ["demande_id", "user_id"],
   data: () => ({
-     wilayaRules: [(v) => !!v || "wilaya is required"],
-     etatRules: [(v) => !!v || "l'état is required"],
-     prixRules: [(v) => !!v || "prix is required"],
-
+    wilayaRules: [(v) => !!v || "wilaya is required"],
+    etatRules: [(v) => !!v || "l'état is required"],
+    prixRules: [(v) => !!v || "prix is required"],
 
     disabled: false,
     delete_dialog: false,
@@ -134,9 +124,10 @@ export default {
       etat_id: "",
       prix_offert: "",
       note: "",
-      image: null,
+      images: [],
       url: "",
     },
+    has_offer: false,
     dialog: false,
   }),
   computed: {
@@ -155,6 +146,16 @@ export default {
       this.offer.url = URL.createObjectURL(this.offer.image[0]);
     },
 
+    //Filepond Image
+    demandImageUploaded(e) {
+      this.offer.images.push(e);
+    },
+    demandImageDeleted(e) {
+      console.log(e);
+      var index = this.offer.images.indexOf(e);
+      this.offer.images.splice(index, 1);
+    },
+
     getMyOffer() {
       HTTP.get("api/reponse/" + this.demande_id)
         .then((response) => {
@@ -168,11 +169,53 @@ export default {
             // console.log(response.data.image)
             this.offer.url = response.data.image;
             this.disabled = true;
+            this.has_offer = true;
           }
         })
         .catch(() => {
           return ["no data found"];
         });
+    },
+    SubmitOffer() {
+      if (!this.$refs.form.validate()) {
+        return;
+      } else {
+        if (this.auth) {
+          let formData = new FormData();
+          formData.append("demande_id", this.demande_id);
+          formData.append("prix_offert", this.offer.prix_offert);
+          formData.append("wilaya_id", this.offer.wilaya_id);
+          formData.append("etat_id", this.offer.etat_id);
+          formData.append("note", this.offer.note);
+          formData.append("images", this.offer.images);
+          // debugger
+          HTTP.post("api/demande/" + this.demande_id + "/offer", formData)
+            .then((response) => {
+              if (response.status == 200) {
+                console.log(response.data.id);
+                this.offer.id = response.data.id;
+                this.disabled = true;
+                this.$emit("offer_responded");
+                this.$toasted.success(this.$t("offer_created_success"), {
+                  theme: "bubble",
+                  position: "top-center",
+                  duration: 3000,
+                  keepOnHover: true,
+                });
+              }
+            })
+            .catch((error) => {
+              return [error];
+            });
+        } else {
+          this.$toasted.show("Vous devez s'inscrire ou se connecter", {
+            theme: "bubble",
+            position: "top-center",
+            duration: 3000,
+            keepOnHover: true,
+          });
+        }
+      }
     },
     retirerOffer() {
       HTTP.delete("api/reponse/" + this.offer.id)
@@ -186,10 +229,12 @@ export default {
               etat_id: "",
               prix_offert: "",
               note: "",
-              image: null,
+              images: [],
               url: "",
             };
             this.disabled = false;
+            this.has_offer = false;
+            this.$emit("remove_offer");
             this.$toasted.danger("Offre retiré avec succés", {
               theme: ["bubble", "outlined"],
               position: "top-center",
@@ -201,52 +246,6 @@ export default {
         .catch((error) => {
           return [error];
         });
-    },
-    SubmitOffer() {
-      if(!this.$refs.form.validate())
-      {
-          return
-      }
-      else{
-        if (this.auth) {
-
-        let formData = new FormData();
-        formData.append("demande_id", this.demande_id);
-        formData.append("prix_offert", this.offer.prix_offert);
-        formData.append("wilaya_id", this.offer.wilaya_id);
-        formData.append("etat_id", this.offer.etat_id);
-        formData.append("note", this.offer.note);
-        if (this.offer.image) {
-          let im = new Blob(this.offer.image);
-          formData.append("image", im);
-        }
-        // debugger
-        HTTP.post("api/demande/" + this.demande_id + "/offer", formData)
-          .then((response) => {
-            if (response.status == 200) {
-              console.log(response.data.id);
-              this.offer.id = response.data.id;
-              this.disabled = true;
-              this.$toasted.success(this.$t("offer_created_success"), {
-                theme: "bubble",
-                position: "top-center",
-                duration: 3000,
-                keepOnHover: true,
-              });
-            }
-          })
-          .catch((error) => {
-            return [error];
-          });
-      } else {
-         this.$toasted.show("Vous devez s'inscrire ou se connecter", {
-                theme: "bubble",
-                position: "top-center",
-                duration: 3000,
-                keepOnHover: true,
-         })
-      }
-      }
     },
   },
   created() {

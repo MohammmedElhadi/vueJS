@@ -107,7 +107,7 @@
                         </v-autocomplete>
                       </v-col>
                       <v-col cols="12" xl="10" lg="10" md="10">
-                        <v-file-input
+                        <!-- <v-file-input
                           :label="$t('photos')"
                           prepend-icon="mdi-camera"
                           multiple
@@ -115,7 +115,8 @@
                           @change="uploadPhotos"
                           accept="image/*"
                           v-model="image"
-                        />
+                        /> -->
+                        <filepond-component @filePondItemUploaded="demandImageUploaded($event)" @filePondItemDeleted="demandImageDeleted($event)" ></filepond-component>
                       </v-col>
                       <v-col cols="12" xl="10" lg="10" md="10">
                         <v-img max-width="200" v-if="url" :src="url"></v-img>
@@ -209,7 +210,9 @@
                       <v-col cols="12" xl="10" lg="10" md="10">
                         <!-- notes -->
                         <v-textarea
+                        :rules="noteRules"
                           clearable
+                          :counter="500"
                           auto-grow
                           dense
                           clear-icon="mdi-close-circle"
@@ -296,6 +299,7 @@ export default {
     categoryRules: [(v) => v.length != 0 || "category is required"],
     wilayaRules: [(v) => !!v || "wilaya is required"],
     etatRules: [(v) => !!v || "Etat is required"],
+    noteRules: [(v) => v.length <=500 || "moins de 500 caracteres"],
     e1: 1,
     demande_dialog: false,
     demand: {
@@ -309,7 +313,7 @@ export default {
       note: "",
       wilaya: "",
     },
-    image: null,
+    images: [],
     url: "",
     types: [],
     marques: [],
@@ -317,9 +321,17 @@ export default {
     categories: [],
     subcategories: [],
     subsubcategories: [],
-    tata: "dfsdf",
   }),
   methods: {
+    //Filepond Image
+    demandImageUploaded(e){
+      this.images.push(e);
+    },
+    demandImageDeleted(e){
+      console.log(e)
+      var index = this.images.indexOf(e);
+      this.images.splice(index, 1);
+    },
     removeItem(item, list) {
       const index = list.indexOf(item.id);
       if (index >= 0) list.splice(index, 1);
@@ -393,19 +405,16 @@ export default {
           "Content-Type": "multipart/form-data",
         },
       };
-      if (this.image) {
-        let im = new Blob(this.image);
-        data.append("image", im);
-      }
       data.append("type", this.demand.type);
       data.append("marques", this.demand.marques);
       data.append("modeles", this.demand.modeles);
-      data.append("category", this.demand.categories);
-      data.append("subcategory", this.demand.subcategories);
-      data.append("subsubcategory", this.demand.subsubcategories);
+      data.append("categories", this.demand.categories);
+      data.append("subcategories", this.demand.subcategories);
+      data.append("subsubcategories", this.demand.subsubcategories);
       data.append("etat", this.demand.etat);
       data.append("note", this.demand.note);
       data.append("wilaya", this.demand.wilaya);
+      data.append("images", this.images);
       if (this.$store.state.auth.authenticated) {
         if (this.$refs.form.validate()) {
           HTTP.post("api/demande", data, config)
