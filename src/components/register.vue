@@ -104,7 +104,7 @@
                       <!-- Type -->
                       <v-autocomplete ref="types"
                         :items="types"
-                        item-text="nom_ar"
+                        :item-text=" getName()"
                         item-value="id"
                         :rules="typeRules"
                         :label="$t('types') +' *'"
@@ -122,7 +122,7 @@
                             @click="data.select"
                             @click:close="removeItem(data.item, user.types)"
                           >
-                            {{ data.item.nom_ar }}
+                            {{  getName2(data.item)}}
                           </v-chip>
                         </template>
                       </v-autocomplete>
@@ -133,7 +133,7 @@
                         multiple
                         chips
                         :items="marques"
-                        item-text="nom_ar"
+                        :item-text=" getName()"
                         item-value="id"
                         :label="$t('marques') "
                         required
@@ -148,7 +148,7 @@
                             @click="data.select"
                             @click:close="removeItem(data.item, user.marques)"
                           >
-                            {{ data.item.nom_ar }}
+                             {{  getName2(data.item)}}
                           </v-chip>
                         </template>
                       </v-autocomplete>
@@ -157,7 +157,7 @@
                       <!-- modeles -->
                       <v-autocomplete
                         :items="modeles"
-                        item-text="nom_ar"
+                        :item-text=" getName()"
                         item-value="id"
                         :label="$t('modeles')"
                         v-model="user.modeles"
@@ -173,7 +173,7 @@
                             @click="data.select"
                             @click:close="removeItem(data.item, user.modeles)"
                           >
-                            {{ data.item.nom_ar }}
+                             {{  getName2(data.item)}}
                           </v-chip>
                         </template>
                       </v-autocomplete>
@@ -186,7 +186,7 @@
                       <!-- categories -->
                       <v-autocomplete
                         :items="categories"
-                        item-text="nom_fr"
+                       :item-text=" getName()"
                         item-value="id"
                         :label="$t('categories')"
                         required
@@ -205,7 +205,7 @@
                               removeItem(data.item, user.categories)
                             "
                           >
-                            {{ data.item.nom_fr }}
+                             {{  getName2(data.item)}}
                           </v-chip>
                         </template>
                       </v-autocomplete>
@@ -214,7 +214,7 @@
                       <!-- subcategories -->
                       <v-autocomplete
                         :items="subcategories"
-                        item-text="nom_fr"
+                        :item-text=" getName()"
                         item-value="id"
                         multiple
                         :label="$t('subcategory')"
@@ -231,7 +231,7 @@
                               removeItem(data.item, user.subcategories)
                             "
                           >
-                            {{ data.item.nom_fr }}
+                             {{  getName2(data.item)}}
                           </v-chip>
                         </template>
                       </v-autocomplete>
@@ -240,7 +240,7 @@
                       <!-- subsubcategories -->
                       <v-autocomplete
                         :items="subsubcategories"
-                        item-text="nom_fr"
+                        :item-text=" getName()"
                         item-value="id"
                         multiple
                         :label="$t('subsubcategory')"
@@ -256,7 +256,7 @@
                               removeItem(data.item, user.subsubcategories)
                             "
                           >
-                            {{ data.item.nom_fr }}
+                             {{  getName2(data.item)}}
                           </v-chip>
                         </template>
                       </v-autocomplete>
@@ -342,6 +342,16 @@ export default {
     etats: [],
   }),
   methods: {
+        getName2(item){
+      if(this.$i18n.locale == 'fr')
+        return item.nom_fr;
+      else return  item.nom_ar;
+    },
+    getName(){
+      if(this.$i18n.locale == 'fr')
+        return "nom_fr";
+      else return  "nom_ar";
+    },
     removeItem(item, list) {
       const index = list.indexOf(item.id);
       if (index >= 0) list.splice(index, 1);

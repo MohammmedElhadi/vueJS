@@ -65,8 +65,8 @@ export default {
     marque_info           :' information sur les marques et les modèles',
     name           :'Nom et prénom ',
     types           :'Types de véhicules',
-    modeles           :'Marques',
-    marques           :'Modèles',
+    modeles           :'Modèles',
+    marques           :'Marques',
 
 
   },

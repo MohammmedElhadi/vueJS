@@ -2,8 +2,8 @@
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawer" app clipped :right="$vuetify.rtl">
       <v-list dense>
-        <!-- <v-list-item link :to="{ name: 'profile' }" v-if="auth"> -->
-        <v-list-item  v-if="auth">
+        <v-list-item link :to="{ name: 'profile' }" v-if="auth">
+        <!-- <v-list-item  v-if="auth"> -->
           <v-list-item-action>
             <v-avatar color="indigo">
               <v-icon dark> mdi-account-circle </v-icon>
@@ -107,16 +107,13 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app clipped-left>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-spacer />
+    <v-app-bar app clipped-left clipped-right >
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>   
       <demand-modal ></demand-modal>
-      <v-spacer />
       <v-menu :close-on-content-click="true" :nudge-width="200" offset-x left>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn class="mx-3" v-bind="attrs" v-on="on" icon>
+          <v-btn  class="mx-3" v-bind="attrs" v-on="on" icon>
             <v-badge
-              v-if="notifications"
               :content="notificationKey"
               :value="notificationKey"
               color="red"
@@ -212,6 +209,7 @@ export default {
     RefreshU() {
       this.logged_user = this.$store.state.auth.user;
       this.auth = this.$store.state.auth.authenticated;
+      this.$i18n.locale = this.user.lang;
     },
     initLanguage() {
       if(this.auth){

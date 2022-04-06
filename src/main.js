@@ -28,7 +28,7 @@ Vue.use(VueEcho, {
   broadcaster: 'pusher',
   key: 123 ,// process.env.MIX_PUSHER_APP_KEY,
   forceTLS: false,
-  wsHost:"safyauto.com",
+  wsHost:"auto_parts.local",
   wsPort: 6001,
   disableStats: true,
   authorizer: (channel, options) => {
@@ -37,7 +37,7 @@ Vue.use(VueEcho, {
       authorize: (socketId, callback) => {
         axios({
           method: "POST",
-          url: "http://safyauto.com/api/broadcasting/auth",
+          url: "http://auto_parts.local:8080/api/broadcasting/auth",
           data: {
             socket_id: socketId,
             channel_name: channel.name,

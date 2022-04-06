@@ -4,7 +4,6 @@
       <template v-slot:activator="{ on, attrs }">
         <v-btn
           small
-          class="mx-3"
           fab
           v-bind="attrs"
           right
@@ -83,7 +82,7 @@
                                 removeItem(data.item, demand.marques)
                               "
                             >
-                              {{ data.item.nom_fr }}
+                              {{  getName2(data.item)}}
                             </v-chip>
                           </template>
                         </v-autocomplete>
@@ -109,7 +108,7 @@
                                 removeItem(data.item, demand.modeles)
                               "
                             >
-                              {{ data.item.nom_fr }}
+                              {{ getName2(data.item)}}
                             </v-chip>
                           </template>
                         </v-autocomplete>
@@ -146,7 +145,7 @@
                                 removeItem(data.item, demand.categories)
                               "
                             >
-                              {{ data.item.nom_fr }}
+                              {{ getName2(data.item) }}
                             </v-chip>
                           </template>
                         </v-autocomplete>
@@ -172,7 +171,7 @@
                                 removeItem(data.item, demand.subcategories)
                               "
                             >
-                              {{ data.item.nom_fr }}
+                              {{ getName2(data.item)}}
                             </v-chip>
                           </template>
                         </v-autocomplete>
@@ -197,7 +196,7 @@
                                 removeItem(data.item, demand.subsubcategories)
                               "
                             >
-                              {{ data.item.nom_fr }}
+                              {{ getName2(data.item) }}
                             </v-chip>
                           </template>
                         </v-autocomplete>
@@ -325,6 +324,11 @@ export default {
     subsubcategories: [],
   }),
   methods: {
+    getName2(item){
+      if(this.$i18n.locale == 'fr')
+        return item.nom_fr;
+      else return  item.nom_ar;
+    },
     getName(){
       if(this.$i18n.locale == 'fr')
         return "nom_fr";

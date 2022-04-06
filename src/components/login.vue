@@ -82,7 +82,6 @@ export default {
                 this.$store.dispatch("auth/login");
                 this.dialog = false;
                 this.$emit("RefreshUser");
-                this.$i18n.locale = response.data
                 this.$toasted.info("Bienvenue ", {
                   theme: "bubble",
                   position: "top-center",

@@ -18,19 +18,6 @@
               ></v-text-field>
             </v-col>
             <v-col cols="12">
-              <!-- notes -->
-              <v-text-field
-                type="password"
-                :label="$t('password') + ' *'"
-                prepend-icon="mdi-key"
-                hide-details="auto"
-                :rules="passRules"
-                v-model="user.password"
-                required
-              ></v-text-field>
-            </v-col>
-
-            <v-col cols="12">
               <!-- phone -->
               <v-text-field
                 prepend-icon="mdi-phone"
@@ -40,7 +27,6 @@
                 v-model="user.phone"
               ></v-text-field>
             </v-col>
-
             <v-col cols="12">
               <!-- wilaya -->
               <v-autocomplete
@@ -68,7 +54,7 @@
               <v-autocomplete
                 ref="types"
                 :items="types"
-                item-text="nom_ar"
+                :item-text="getName()"
                 item-value="id"
                 :rules="typeRules"
                 :label="$t('types') + ' *'"
@@ -85,7 +71,7 @@
                     @click="data.select"
                     @click:close="removeItem(data.item, user.types)"
                   >
-                    {{ data.item.nom_ar }}
+                    {{ getName2(data.item) }}
                   </v-chip>
                 </template>
               </v-autocomplete>
@@ -96,12 +82,11 @@
                 multiple
                 chips
                 :items="marques"
-                item-text="nom_ar"
+                :item-text="getName()"
                 item-value="id"
                 :label="$t('marques')"
                 required
                 v-model="user.marques"
-                @change="getModeles($event)"
               >
                 <template v-slot:selection="data">
                   <v-chip
@@ -111,7 +96,7 @@
                     @click="data.select"
                     @click:close="removeItem(data.item, user.marques)"
                   >
-                    {{ data.item.nom_ar }}
+                    {{ getName2(data.item) }}
                   </v-chip>
                 </template>
               </v-autocomplete>
@@ -120,7 +105,7 @@
               <!-- modeles -->
               <v-autocomplete
                 :items="modeles"
-                item-text="nom_ar"
+                :item-text="getName()"
                 item-value="id"
                 :label="$t('modeles')"
                 v-model="user.modeles"
@@ -136,7 +121,7 @@
                     @click="data.select"
                     @click:close="removeItem(data.item, user.modeles)"
                   >
-                    {{ data.item.nom_ar }}
+                    {{ getName2(data.item) }}
                   </v-chip>
                 </template>
               </v-autocomplete>
@@ -147,14 +132,13 @@
               <!-- categories -->
               <v-autocomplete
                 :items="categories"
-                item-text="nom_fr"
+                :item-text="getName()"
                 item-value="id"
                 :label="$t('categories')"
                 required
                 multiple
                 chips
                 v-model="user.categories"
-                @change="getSubCategories"
               >
                 <template v-slot:selection="data">
                   <v-chip
@@ -164,7 +148,7 @@
                     @click="data.select"
                     @click:close="removeItem(data.item, user.categories)"
                   >
-                    {{ data.item.nom_fr }}
+                    {{ getName2(data.item) }}
                   </v-chip>
                 </template>
               </v-autocomplete>
@@ -173,12 +157,11 @@
               <!-- subcategories -->
               <v-autocomplete
                 :items="subcategories"
-                item-text="nom_fr"
+                :item-text="getName()"
                 item-value="id"
                 multiple
                 :label="$t('subcategory')"
                 v-model="user.subcategories"
-                @change="getSubSubCategories"
               >
                 <template v-slot:selection="data">
                   <v-chip
@@ -188,7 +171,7 @@
                     @click="data.select"
                     @click:close="removeItem(data.item, user.subcategories)"
                   >
-                    {{ data.item.nom_fr }}
+                    {{ getName2(data.item) }}
                   </v-chip>
                 </template>
               </v-autocomplete>
@@ -197,7 +180,7 @@
               <!-- subsubcategories -->
               <v-autocomplete
                 :items="subsubcategories"
-                item-text="nom_fr"
+                :item-text="getName()"
                 item-value="id"
                 multiple
                 :label="$t('subsubcategory')"
@@ -211,7 +194,7 @@
                     @click="data.select"
                     @click:close="removeItem(data.item, user.subsubcategories)"
                   >
-                    {{ data.item.nom_fr }}
+                    {{ getName2(data.item) }}
                   </v-chip>
                 </template>
               </v-autocomplete>
@@ -221,8 +204,8 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-btn color="success" class="mx-10" @click.prevent="register()">
-          {{ $t("signin") }}
+        <v-btn color="success" class="mx-10" @click.prevent="update()">
+          {{ $t("save") }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -233,7 +216,6 @@ import { HTTP } from "../http-constants";
 export default {
   components: {},
   data: () => ({
-    user: null,
     nameRules: [(v) => !!v || "Name is required"],
     phoneRules: [
       (v) => !!v || "Phone is required",
@@ -244,6 +226,7 @@ export default {
     wilayaRules: [(v) => !!v || "wilaya is required"],
 
     /*************************************** */
+    user: {},
     types: [],
     marques: [],
     modeles: [],
@@ -261,17 +244,50 @@ export default {
   },
 
   methods: {
-   
-     async getTypes() {
+    removeItem(item, list) {
+      const index = list.indexOf(item.id);
+      if (index >= 0) list.splice(index, 1);
+    },
+    getName2(item) {
+      if (this.$i18n.locale == "fr") return item.nom_fr;
+      else return item.nom_ar;
+    },
+    getName() {
+      if (this.$i18n.locale == "fr") return "nom_fr";
+      else return "nom_ar";
+    },
+    getUserInfo() {
+      HTTP.get("api/user/profile").then((repsponse) => {
+        let data = repsponse.data;
+        this.user.name = data.name;
+        this.user.phone = data.phone;
+        this.user.wilaya = data.wilaya_id;
+        this.user.types = data.types.map((a) => a.id);
+        this.user.marques = data.marques.map((a) => a.id);
+        this.user.modeles = data.modeles.map((a) => a.id);
+        this.user.categories = data.categories.map((a) => a.id);
+        this.user.subcategories = data.subcategories.map((a) => a.id);
+        this.user.subsubcategories = data.subcategories2.map((a) => a.id);
+        this.getModeles();
+        this.getSubCategories();
+        this.getSubSubCategories();
+        console.log(this.user);
+      });
+    },
+    init() {
+      this.getTypes();
+      this.getMarques();
+      this.getCategories();
+    },
+    async getTypes() {
       let response = await HTTP.get("api/type");
       this.types = response.data;
     },
     async getMarques() {
       let response = await HTTP.get("api/marque");
       this.marques = response.data;
-      
     },
-     getModeles() {
+    getModeles() {
       this.modeles = [];
       HTTP.post("api/marque/modele", this.user.marques)
         .then((repsponse) => {
@@ -281,46 +297,55 @@ export default {
           console.log(error);
         });
     },
-    //-----------------------------------
     async getCategories() {
       let response = await HTTP.get("api/category");
       this.categories = response.data;
     },
     getSubCategories() {
-      HTTP.post("api/category/subcategories" , this.user.categories)
+      HTTP.post("api/category/subcategories", this.user.categories)
         .then((repsponse) => {
-          this.subcategories = this.subcategories.concat(repsponse.data)
+          this.subcategories = this.subcategories.concat(repsponse.data);
         })
         .catch((error) => {
           console.log(error);
         });
     },
     getSubSubCategories() {
-      HTTP.post("api/subcategory/subcategory2s" ,  this.user.subcategories)
+      HTTP.post("api/subcategory/subcategory2s", this.user.subcategories)
         .then((repsponse) => {
-          this.subsubcategories = this.subsubcategories.concat (repsponse.data);
+          this.subsubcategories = this.subsubcategories.concat(repsponse.data);
         })
         .catch((error) => {
           console.log(error);
         });
     },
-     async getUserInfo() {
-      let repsponse = await HTTP.get("api/user/profile");
-      this.user = repsponse.data;
-      this.getModeles();
-      this.getCategories();
-      this.getSubCategories();
-      this.getSubSubCategories();
+
+    update() {
+      console.log("api/user/update/"+this.$store.state.auth.user.id)
+      if (this.$refs.form.validate()) {
+        HTTP.put("api/user/update/"+this.$store.state.auth.user.id ,  this.user)
+          .then((response) => {
+            if (response.status == 200) {
+              this.$toasted.info("Updated", {
+                theme: "bubble",
+                position: "top-center",
+                duration: 5000,
+                keepOnHover: true,
+              });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+          .finally();
+      }
     },
   },
 
   created() {
     this.getUserInfo();
-    this.getTypes();
-    this.getMarques(); 
+    this.init();
   },
-  mounted(){
-   
-  }
+  mounted() {},
 };
 </script>
