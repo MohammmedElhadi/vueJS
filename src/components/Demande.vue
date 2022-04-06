@@ -66,7 +66,7 @@
               close-icon="mdi-close-outline"
               class="white--text"
               color="deep-purple darken-4"
-              >{{ demande.type.nom_fr }}
+              >{{ getName(demande.type) }}
             </v-chip>
             <v-chip-group column>
               <v-chip
@@ -75,7 +75,7 @@
                 color="warning"
                 v-for="category in demande.categories"
                 :key="'cat' + category.id"
-                >{{ category.nom_fr }}
+                >{{ getName(category) }}
               </v-chip>
             </v-chip-group>
             <v-chip-group column>
@@ -86,7 +86,7 @@
                 outlined
                 v-for="subcategory in demande.subcategories"
                 :key="'subcat' + subcategory.id"
-                >{{ subcategory.nom_fr }}
+                >{{ getName(subcategory)}}
               </v-chip>
             </v-chip-group>
 
@@ -97,7 +97,7 @@
                 small
                 close-icon="mdi-close-outline"
                 color="success"
-                >{{ marque.nom_fr }}
+                >{{ getName(marque) }}
               </v-chip>
             </v-chip-group>
             <v-chip-group column>
@@ -108,7 +108,7 @@
                 close-icon="mdi-close-outline"
                 color="success"
                 outlined
-                >{{ modele.nom_fr }}
+                >{{ getName(modele) }}
               </v-chip>
             </v-chip-group>
 
@@ -120,11 +120,12 @@
             <v-chip-group>
               <v-chip small color="success">
                 <v-icon x-small>mdi-google-maps</v-icon>
-                {{ wilaya.code + " " + wilaya.name }}
+                {{$i18n.locale == 'fr' ? wilaya.code + " " +  wilaya.name 
+                                       : wilaya.code + " " + wilaya.arabic_name }}
               </v-chip>
               <v-chip color="info" small>
                 <v-icon x-small>mdi-</v-icon>
-                {{ etat.nom_fr }}
+                {{ getName(etat) }}
               </v-chip>
             </v-chip-group>
           </v-col>
@@ -166,7 +167,7 @@
             @click="show_detail = true"
             :class="demande.responded ? 'green' : 'pink'"
           >
-            {{ $t("propose") }}</v-expansion-panel-header
+            {{demande.responded? $t("see_offer") :$t("propose") }}</v-expansion-panel-header
           >
           <offers-list
             v-if="owner && show_detail"
@@ -225,6 +226,11 @@ export default {
     },
   },
   methods: {
+    getName(item){
+      if(this.$i18n.locale == 'fr')
+        return item.nom_fr;
+      else return  item.nom_ar;
+    },
     ToggleSaved() {
       HTTP.get("api/demande/" + this.demande.demande.id + "/ToggleSaved")
         .then((response) => {

@@ -2,7 +2,8 @@
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawer" app clipped :right="$vuetify.rtl">
       <v-list dense>
-        <v-list-item link :to="{ name: 'profile' }" v-if="auth">
+        <!-- <v-list-item link :to="{ name: 'profile' }" v-if="auth"> -->
+        <v-list-item  v-if="auth">
           <v-list-item-action>
             <v-avatar color="indigo">
               <v-icon dark> mdi-account-circle </v-icon>
@@ -108,8 +109,10 @@
 
     <v-app-bar app clipped-left>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <demand-modal></demand-modal>
-      <v-menu :close-on-content-click="true" :nudge-width="200" offset-x left >
+      <v-spacer />
+      <demand-modal ></demand-modal>
+      <v-spacer />
+      <v-menu :close-on-content-click="true" :nudge-width="200" offset-x left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn class="mx-3" v-bind="attrs" v-on="on" icon>
             <v-badge
@@ -125,6 +128,7 @@
         <notifications
           :notifications="notifications"
           :key="notificationKey"
+          @markNotificationAsRead="markNotificationAsRead()"
         ></notifications>
       </v-menu>
     </v-app-bar>
@@ -173,6 +177,9 @@ export default {
     this.$store.dispatch("loadEtats");
   },
   methods: {
+    markNotificationAsRead() {
+      this.notificationkey--;
+    },
     ...mapActions({
       singOut: "auth/logout",
     }),
@@ -207,11 +214,18 @@ export default {
       this.auth = this.$store.state.auth.authenticated;
     },
     initLanguage() {
+      if(this.auth){
+        this.$i18n.locale = this.user.lang;
+      }
       let lang = this.langs.find((item) => item.abr == this.$i18n.locale);
       this.activeLang = lang.title;
       this.$vuetify.rtl = lang.rtl;
     },
     handleMenuItemClick(lang) {
+      HTTP.post('api/user/lang' , lang)
+          .then((response) =>{
+              console.log(response.data)
+          })
       this.activeLang = lang.title;
       this.$i18n.locale = lang.abr;
       this.$vuetify.rtl = lang.rtl;
@@ -276,9 +290,9 @@ export default {
         });
     }
   },
-  beforeCreate(){
+  beforeCreate() {
     if (this.auth) {
-      this.$i18n.locale = this.$store.state.auth.user.lang
+      this.$i18n.locale = this.$store.state.auth.user.lang;
       // this.$vuetify.rtl = lang.rtl;
     }
   },
@@ -287,4 +301,10 @@ export default {
   },
 };
 </script>
+ <style lang="scss">
+@import url("https://fonts.googleapis.com/css2?family=Tajawal&display=swap");
 
+.application {
+  font-family: "Questrial";
+}
+</style>

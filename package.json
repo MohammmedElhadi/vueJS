@@ -17,6 +17,7 @@
     "filepond-plugin-image-preview": "^4.6.11",
     "laravel-echo": "^1.11.4",
     "moment": "^2.29.1",
+    "numeric-keyboard": "^0.7.0",
     "pusher-js": "^7.0.6",
     "roboto-fontface": "^0.10.0",
     "sweetalert2": "^11.4.4",

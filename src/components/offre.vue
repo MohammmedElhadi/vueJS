@@ -7,7 +7,8 @@
             <v-autocomplete
               dense
               :items="wilayas"
-              item-text="name"
+               :item-text="$i18n.locale == 'fr' ? 'name' 
+                                       :'arabic_name'"
               item-value="id"
               :label="$t('wilaya')"
               prepend-icon="mdi-google-maps"
@@ -15,7 +16,8 @@
               v-model="offer.wilaya_id"
             >
               <template v-slot:item="slotProps"
-                >{{ slotProps.item.code }}-{{ slotProps.item.name }}
+                > {{ $i18n.locale == 'fr' ? slotProps.item.code + " " +  slotProps.item.name 
+                                       : slotProps.item.code + " " + slotProps.item.arabic_name}}
               </template>
             </v-autocomplete>
           </v-col>
@@ -24,7 +26,7 @@
             <v-autocomplete
               dense
               :items="etats"
-              item-text="nom_fr"
+              :item-text="getName()"
               item-value="id"
               :label="$t('etat')"
               prepend-icon="mdi-circle"
@@ -60,11 +62,10 @@
           />
         </v-col>
         <v-btn
+
           dense
           fa-flip-horizontal
-          outlined
           rounded
-          text
           color="success"
           :disabled="disabled"
           @click="SubmitOffer()"
@@ -142,8 +143,10 @@ export default {
     },
   },
   methods: {
-    showPhoto() {
-      this.offer.url = URL.createObjectURL(this.offer.image[0]);
+      getName(){
+      if(this.$i18n.locale == 'fr')
+        return "nom_fr";
+      else return  "nom_ar";
     },
 
     //Filepond Image
@@ -197,6 +200,14 @@ export default {
                 this.disabled = true;
                 this.$emit("offer_responded");
                 this.$toasted.success(this.$t("offer_created_success"), {
+                  theme: "bubble",
+                  position: "top-center",
+                  duration: 3000,
+                  keepOnHover: true,
+                });
+              }
+              if(response.status == 419){
+                  this.$toasted.success(this.$t("reconnect_plz"), {
                   theme: "bubble",
                   position: "top-center",
                   duration: 3000,

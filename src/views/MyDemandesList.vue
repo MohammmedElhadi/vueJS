@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="my-5 px-16" v-for="demande in demandes" :key="'dem'+demande.id">
+    <div class="my-5 px-1" v-for="demande in demandes" :key="'dem'+demande.id">
       <demande :demande="demande" :detail="detail"></demande>
     </div>
   </div>

@@ -3,12 +3,17 @@
     <v-expansion-panel-content>
       <v-dialog v-model="dialog" width="800"  >
         <v-card>
-          <v-card-title> {{$t('detail_offer')}} </v-card-title>
-
+          <v-card-title> {{$t('detail_offer')}}
+            <v-spacer />
+           <v-btn icon dark @click="dialog = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn> 
+            </v-card-title>
           <v-card-text>
              <v-row>
-              <v-col cols="6" >
-            {{$t('wilaya')}} : <v-chip small>{{ offer.wilaya }}</v-chip>
+              <v-col cols="12" md="6" lg="6" xl="6">
+            {{$t('wilaya')}} : <v-chip small>
+              {{ offer.wilaya }}</v-chip>
             <br>
             <br>
             {{$t('etat')}} : <v-chip small>{{ offer.etat }}</v-chip>
@@ -23,7 +28,7 @@
          
               </v-col>
 
-        <v-col cols="6">
+         <v-col cols="12" md="6" lg="6" xl="6">
              <v-carousel height="300" v-if="offer.images.length > 0" touch>
               <v-carousel-item
                 v-for="(image, i) in offer.images"

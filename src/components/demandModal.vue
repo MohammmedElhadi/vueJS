@@ -2,14 +2,22 @@
   <v-row justify="center">
     <v-dialog v-model="demande_dialog" max-width="90%">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn small fab v-bind="attrs" right v-on="on" color="primary">
+        <v-btn
+          small
+          class="mx-3"
+          fab
+          v-bind="attrs"
+          right
+          v-on="on"
+          color="primary"
+        >
           <v-icon>mdi-plus</v-icon>
         </v-btn>
       </template>
       <v-card>
         <v-form ref="form" class="mx-2" lazy-validation>
           <v-card-title>
-            <span class="text-h5">{{$t('new_demand')}} </span>
+            <span class="text-h5">{{ $t("new_demand") }} </span>
             <v-spacer />
             <v-btn icon dark @click="demande_dialog = false">
               <v-icon>mdi-close</v-icon>
@@ -20,19 +28,19 @@
               <v-container>
                 <v-stepper-header>
                   <v-stepper-step :complete="e1 > 1" step="1">
-                    {{$t('Marque_modele')}}
+                    {{ $t("Marque_modele") }}
                   </v-stepper-step>
 
                   <v-divider></v-divider>
 
                   <v-stepper-step :complete="e1 > 2" step="2">
-                    {{$t('category')}}
+                    {{ $t("category") }}
                   </v-stepper-step>
 
                   <v-divider></v-divider>
 
                   <v-stepper-step step="3">
-                    {{$t('additionnel')}}
+                    {{ $t("additionnel") }}
                   </v-stepper-step>
                 </v-stepper-header>
                 <v-stepper-items>
@@ -42,7 +50,7 @@
                         <!-- Type -->
                         <v-autocomplete
                           :items="types"
-                          item-text="nom_ar"
+                          :item-text=" getName()"
                           item-value="id"
                           :rules="typeRules"
                           :label="$t('type')"
@@ -58,7 +66,7 @@
                           multiple
                           chips
                           :items="marques"
-                          item-text="nom_ar"
+                          :item-text=" getName()"
                           item-value="id"
                           :label="$t('marque')"
                           required
@@ -84,7 +92,7 @@
                         <!-- modeles -->
                         <v-autocomplete
                           :items="modeles"
-                          item-text="nom_ar"
+                          :item-text=" getName()"
                           item-value="id"
                           :label="$t('modele')"
                           v-model="demand.modeles"
@@ -107,19 +115,10 @@
                         </v-autocomplete>
                       </v-col>
                       <v-col cols="12" xl="10" lg="10" md="10">
-                        <!-- <v-file-input
-                          :label="$t('photos')"
-                          prepend-icon="mdi-camera"
-                          multiple
-                          show-size
-                          @change="uploadPhotos"
-                          accept="image/*"
-                          v-model="image"
-                        /> -->
-                        <filepond-component @filePondItemUploaded="demandImageUploaded($event)" @filePondItemDeleted="demandImageDeleted($event)" ></filepond-component>
-                      </v-col>
-                      <v-col cols="12" xl="10" lg="10" md="10">
-                        <v-img max-width="200" v-if="url" :src="url"></v-img>
+                        <filepond-component
+                          @filePondItemUploaded="demandImageUploaded($event)"
+                          @filePondItemDeleted="demandImageDeleted($event)"
+                        ></filepond-component>
                       </v-col>
                     </v-row>
                   </v-stepper-content>
@@ -129,7 +128,7 @@
                         <!-- categories -->
                         <v-autocomplete
                           :items="categories"
-                          item-text="nom_fr"
+                          :item-text=" getName()"
                           item-value="id"
                           :label="$t('category')"
                           :rules="categoryRules"
@@ -156,7 +155,7 @@
                         <!-- subcategories -->
                         <v-autocomplete
                           :items="subcategories"
-                          item-text="nom_fr"
+                          :item-text=" getName()"
                           item-value="id"
                           :label="$t('subcategory')"
                           v-model="demand.subcategories"
@@ -182,7 +181,7 @@
                         <!-- subsubcategories -->
                         <v-autocomplete
                           :items="subsubcategories"
-                          item-text="nom_fr"
+                          :item-text=" getName()"
                           item-value="id"
                           :label="$t('subsubcategory')"
                           v-model="demand.subsubcategories"
@@ -205,18 +204,18 @@
                       </v-col>
                     </v-row>
                   </v-stepper-content>
-                  <v-stepper-content step="3" >
-                    <v-row dense  class="justify-center">
+                  <v-stepper-content step="3">
+                    <v-row dense class="justify-center">
                       <v-col cols="12" xl="10" lg="10" md="10">
                         <!-- notes -->
                         <v-textarea
-                        :rules="noteRules"
+                          :rules="noteRules"
                           clearable
                           :counter="500"
                           auto-grow
                           dense
                           clear-icon="mdi-close-circle"
-                         :label="$t('note')"
+                          :label="$t('note')"
                           v-model="demand.note"
                         ></v-textarea>
                       </v-col>
@@ -224,7 +223,8 @@
                         <!-- wilaya -->
                         <v-autocomplete
                           :items="wilayas"
-                          item-text="name"
+                          :item-text="$i18n.locale == 'fr' ? 'name' 
+                                       :'arabic_name'"
                           :rules="wilayaRules"
                           item-value="id"
                           :label="$t('wilaya_demand')"
@@ -233,7 +233,9 @@
                           v-model="demand.wilaya"
                         >
                           <template v-slot:item="slotProps"
-                            >{{ slotProps.item.code }}-{{ slotProps.item.name }}
+                            >
+                              {{ $i18n.locale == 'fr' ? slotProps.item.code + " " +  slotProps.item.name 
+                                       : slotProps.item.code + " " + slotProps.item.arabic_name}}
                           </template>
                         </v-autocomplete>
                       </v-col>
@@ -242,7 +244,7 @@
                         <v-autocomplete
                           :items="etats"
                           :rules="etatRules"
-                          item-text="nom_fr"
+                          :item-text="getName()"
                           item-value="id"
                           :label="$t('etat_demand')"
                           required
@@ -264,16 +266,16 @@
                 v-show="e1 > 1"
                 @click="e1 = e1 - 1"
               >
-                {{$t('previous')}}
+                {{ $t("previous") }}
               </v-btn>
               <v-spacer></v-spacer>
               <v-btn
-                color="blue darken-1"
+                color="warning darken-1"
                 class="mx-10"
                 v-show="e1 < 3"
                 @click="e1 = e1 + 1"
               >
-                {{$t('next')}}
+                {{ $t("next") }}
               </v-btn>
               <v-btn
                 color="success"
@@ -281,7 +283,7 @@
                 v-show="e1 == 3"
                 @click.prevent="submitDemande()"
               >
-                {{$t('make_demand')}}
+                {{ $t("make_demand") }}
               </v-btn>
             </v-card-actions>
           </v-stepper>
@@ -299,7 +301,7 @@ export default {
     categoryRules: [(v) => v.length != 0 || "category is required"],
     wilayaRules: [(v) => !!v || "wilaya is required"],
     etatRules: [(v) => !!v || "Etat is required"],
-    noteRules: [(v) => v.length <=500 || "moins de 500 caracteres"],
+    noteRules: [(v) => v.length <= 500 || "moins de 500 caracteres"],
     e1: 1,
     demande_dialog: false,
     demand: {
@@ -323,12 +325,17 @@ export default {
     subsubcategories: [],
   }),
   methods: {
+    getName(){
+      if(this.$i18n.locale == 'fr')
+        return "nom_fr";
+      else return  "nom_ar";
+    },
     //Filepond Image
-    demandImageUploaded(e){
+    demandImageUploaded(e) {
       this.images.push(e);
     },
-    demandImageDeleted(e){
-      console.log(e)
+    demandImageDeleted(e) {
+      console.log(e);
       var index = this.images.indexOf(e);
       this.images.splice(index, 1);
     },
@@ -337,10 +344,6 @@ export default {
       if (index >= 0) list.splice(index, 1);
     },
     // step 1
-    uploadPhotos() {
-      this.url = URL.createObjectURL(this.image[0]);
-      console.log(this.url);
-    },
     getTypes() {
       HTTP.get("api/type")
         .then((repsponse) => {
@@ -427,17 +430,16 @@ export default {
                   duration: 5000,
                   keepOnHover: true,
                 });
-                if (this.$router.name == 'demande') {
-                    this.$router.replace({name: "demande",
-                  params: { id: response.data },
-                });
-
-                }
-                else {
+                if (this.$router.name == "demande") {
+                  this.$router.replace({
+                    name: "demande",
+                    params: { id: response.data },
+                  });
+                } else {
                   this.$router.push({
-                  name: "demande",
-                  params: { id: response.data },
-                });
+                    name: "demande",
+                    params: { id: response.data },
+                  });
                 }
                 this.$emit("refreshDemande");
               }

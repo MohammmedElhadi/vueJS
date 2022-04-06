@@ -33,6 +33,7 @@ export default {
     offer_created_success : 'Votre offre a été enregistré',
     delete_offer             : "Supprimer l'offre"  ,
     detail_offer             : "Détail de l'offre"  ,
+    see_offer            : "Afficher votre offre"  ,
     //demande
     new_demand      : 'Nouvelle demande',
     Marque_modele      :  'Marque et modele de véhicule',
@@ -95,6 +96,7 @@ export default {
     remove_offer            : 'اسحب عرضك',
     offer_created_success : 'قد تم إرسال عرضك',
     delete_offer            : "حذف العرض"  ,
+    see_offer            : "شاهد عرضك"  ,
 
     propose      : 'قدم عرضا',
     login      : 'تسجيل الدخول',

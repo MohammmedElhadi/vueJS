@@ -18,9 +18,7 @@ Vue.use(Toasted)
 // Vue.use(VueSweetalert2);
 
 /*********************************/
-import { VueMaskDirective } from 'v-mask'
-Vue.directive('mask', VueMaskDirective);
-/*********************************/
+
 import VueResizeText from 'vue-resize-text';
 Vue.use(VueResizeText)
 /*********************************/
@@ -30,7 +28,7 @@ Vue.use(VueEcho, {
   broadcaster: 'pusher',
   key: 123 ,// process.env.MIX_PUSHER_APP_KEY,
   forceTLS: false,
-  wsHost:"auto_parts.local",
+  wsHost:"safyauto.com",
   wsPort: 6001,
   disableStats: true,
   authorizer: (channel, options) => {
@@ -39,7 +37,7 @@ Vue.use(VueEcho, {
       authorize: (socketId, callback) => {
         axios({
           method: "POST",
-          url: "http://auto_parts.local:8080/api/broadcasting/auth",
+          url: "http://safyauto.com/api/broadcasting/auth",
           data: {
             socket_id: socketId,
             channel_name: channel.name,
