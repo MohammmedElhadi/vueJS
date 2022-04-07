@@ -3,14 +3,14 @@
     <v-dialog v-model="dialog" eager max-width="100%">
       <template v-slot:activator="{ on, attrs }">
         <v-btn class="my-2" block v-bind="attrs" right v-on="on" outlined color="info">
-          S'inscrire
+          {{$t('signin')}}
         </v-btn>
       </template>
       <v-form ref="form" class="mx-2" lazy-validation>
       <v-card class="pa-0">
         <v-card-title>
          
-          <span class="text-h5">S'inscrire</span>
+          <span class="text-h5">{{$t('signin')}}</span>
           <v-spacer/>
            <v-btn
               icon
@@ -24,19 +24,21 @@
             <v-container>
               <v-stepper-header >
                 <v-stepper-step :complete="e1 > 1" step="1">
-                  Information de contact
+                  {{$t('contact_info')}}
                 </v-stepper-step>
 
                 <v-divider></v-divider>
 
                 <v-stepper-step :complete="e1 > 2" step="2">
-                  Information sur les catégories
+                   {{$t('category_info')}}
+
                 </v-stepper-step>
 
                 <v-divider></v-divider>
 
                 <v-stepper-step step="3">
-                  information sur les marques et les modèles
+                   {{$t('marque_info')}}
+
                 </v-stepper-step>
               </v-stepper-header>
               <v-stepper-items>
@@ -45,8 +47,7 @@
                     <v-col cols="12">
                       <!-- nom -->
                       <v-text-field
-                        label="Nom et prénom *"
-                        
+                        :label="$t('name') +' *'"
                         prepend-icon="mdi-account"
                         hide-details="auto"
                         :rules="nameRules"
@@ -57,7 +58,7 @@
                       <!-- notes -->
                       <v-text-field
                         type="password"
-                        label="Mot de passe *"
+                        :label="$t('password') +' *'"
                         prepend-icon="mdi-key"
                         hide-details="auto"
                         :rules="passRules"
@@ -70,7 +71,7 @@
                       <!-- phone -->
                       <v-text-field
                         prepend-icon="mdi-phone"
-                        label="Numéros de telephone *"
+                        :label="$t('tel') +' *'"
                         hide-details="auto"
                         :rules="phoneRules"
                         v-model="user.phone"
@@ -83,7 +84,7 @@
                         :items="wilayas"
                         item-text="name"
                         item-value="id"
-                        label="Wilaya *"
+                        :label="$t('wilaya') +' *'"
                         prepend-icon="mdi-google-maps"
                         required
                         :rules="wilayaRules"
@@ -106,7 +107,7 @@
                         item-text="nom_ar"
                         item-value="id"
                         :rules="typeRules"
-                        label="Types de véhicules *"
+                        :label="$t('types') +' *'"
                         chips
                         required
                         multiple
@@ -134,7 +135,7 @@
                         :items="marques"
                         item-text="nom_ar"
                         item-value="id"
-                        label="Marque de la véhicule"
+                        :label="$t('marques') "
                         required
                         v-model="user.marques"
                         @change="getModeles($event)"
@@ -158,7 +159,7 @@
                         :items="modeles"
                         item-text="nom_ar"
                         item-value="id"
-                        label="Modele de la véhicule"
+                        :label="$t('modeles')"
                         v-model="user.modeles"
                         required
                         chips
@@ -187,7 +188,7 @@
                         :items="categories"
                         item-text="nom_fr"
                         item-value="id"
-                        label="Categories des pieces"
+                        :label="$t('categories')"
                         required
                         multiple
                         chips
@@ -216,7 +217,7 @@
                         item-text="nom_fr"
                         item-value="id"
                         multiple
-                        label="Sous categories"
+                        :label="$t('subcategory')"
                         v-model="user.subcategories"
                         @change="getSubSubCategories"
                       >
@@ -242,7 +243,7 @@
                         item-text="nom_fr"
                         item-value="id"
                         multiple
-                        label="Sous sous categorie de la piece"
+                        :label="$t('subsubcategory')"
                         v-model="user.subsubcategories"
                       >
                         <template v-slot:selection="data">
@@ -273,7 +274,7 @@
               v-show="e1 > 1"
               @click="e1 = e1 - 1"
             >
-              Precident
+              {{$t('previous')}}
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn
@@ -282,7 +283,7 @@
               v-show="e1 < 3"
               @click="e1 = e1 + 1"
             >
-              Suivant
+               {{$t('next')}}
             </v-btn>
             <v-btn
               color="success"
@@ -290,7 +291,7 @@
               v-show="e1 == 3"
               @click.prevent="register()"
             >
-              S'inscrire
+               {{$t('signin')}}
             </v-btn>
           </v-card-actions>
         </v-stepper>

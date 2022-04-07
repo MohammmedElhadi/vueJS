@@ -3,12 +3,12 @@
     <v-dialog v-model="dialog" max-width="800px">
       <template v-slot:activator="{ on, attrs }">
         <v-btn text class="my-2" block v-bind="attrs" right v-on="on" outlined>
-          Se connecter
+          {{$t('login')}}
         </v-btn>
       </template>
       <v-card>
         <v-form ref="form" class="mx-2" lazy-validation>
-          <v-card-title>Se connecter</v-card-title>
+          <v-card-title>{{$t('login')}}</v-card-title>
           <v-divider />
           <v-card-text>
             <v-row class="justify-center">
@@ -16,7 +16,7 @@
                 <!-- phone -->
                 <v-text-field
                   prepend-icon="mdi-phone"
-                  label="Numéros de telephone"
+                  :label="$t('tel')"
                   hide-details="auto"
                   :rules="phoneRules"
                   v-model="user.phone"
@@ -27,7 +27,7 @@
                   ref="ssss"
                   :rules="passRules"
                   type="password"
-                  label="Mot de passe"
+                  :label="$t('password')"
                   prepend-icon="mdi-lock"
                   hide-details="auto"
                   v-model="user.password"
@@ -39,10 +39,9 @@
           <v-divider></v-divider>
           <v-card-actions class="justify-center">
             <v-btn color="success mx-10" @click.prevent="login">
-              se connecter
+              {{$t('login')}}
             </v-btn>
             <v-spacer />
-            <v-btn color="info mx-10" @click="login()"> s'inscrire </v-btn>
           </v-card-actions>
         </v-form>
       </v-card>
@@ -56,10 +55,13 @@ export default {
   name: "login",
   data: () => ({
     phoneRules: [
-      (v) => !!v || "Phone is required",
-      (v) => /^\d+$/.test(v) || "Phone must be a number",
+      (v) => !!v || "",
+      (v) => /^\d+$/.test(v) || "",
+      // (v) => !!v || "Phone is required",
+      // (v) => /^\d+$/.test(v) || "Phone must be a number",
     ],
-    passRules: [(v) => !!v || "password is required"],
+    // passRules: [(v) => !!v || "password is required"],
+    passRules: [(v) => !!v || ""],
     user: {
       phone: "",
       password: "",
@@ -78,12 +80,14 @@ export default {
                 this.$store.dispatch("auth/login");
                 this.dialog = false;
                 this.$emit("RefreshUser");
+                this.$i18n.locale = response.data
                 this.$toasted.info("Bienvenue ", {
                   theme: "bubble",
                   position: "top-center",
                   duration: 5000,
                   keepOnHover: true,
                 });
+                this.$router.go()
               }
             })
             .catch(() => {
@@ -101,6 +105,7 @@ export default {
             .finally();
         });
       }
+      
     },
   },
 };

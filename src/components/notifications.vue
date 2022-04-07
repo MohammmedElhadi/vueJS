@@ -5,36 +5,27 @@
       <v-spacer></v-spacer>
     </v-card-title>
     <v-divider></v-divider>
-    <v-virtual-scroll :items="notifications" :item-height="50" height="300">
+    <v-virtual-scroll :items="items" :item-height="50" height="300" >
       <template v-slot:default="{ item }">
-        <v-list-item>
+        <v-list-item @click="()=>{
+                $router.replace({ name: 'demande', params: { id: item.data.demande.id}} );
+              }">
           <v-list-item-avatar>
                             <v-avatar
-                                color="purple whiten-3"
+                                :color="item.type=='App\\Notifications\\ReponseNotification' ? 'purple whiten-3' :'yellow whiten-3' "
                                 size="56"
-                                class="white--text"
+                                :class="item.type=='App\\Notifications\\ReponseNotification' ? 'white--text' :'black--text' "
+                                item.type
                             >
-                                T
+                                {{item.type=='App\\Notifications\\ReponseNotification' ? 'R' :'D'}}
                             </v-avatar>
                         </v-list-item-avatar>
-
-          <v-list-item-content @click="()=>{
-                $router.replace({ name: 'demande', params: { id: item.demande.id }} );
-              }">
-            <v-list-item-title
-              >Demande {{ item.demande.id }} qui conserne
-              {{ item.demande.types[0].nom_fr }}</v-list-item-title
+          <v-list-item-content >
+            <v-list-item-title  v-resize-text ="{ratio:1 , minFontSize: '5px', maxFontSize: '14px'}"
+              >{{ item.type=='App\\Notifications\\ReponseNotification' ? 
+                  $t('offer_demand')+ item.data.demande.id+' , '+$t('wilaya') +' '+ $store.state.wilayas.find((itemf) => itemf.id == item.data.reponse.wilaya_id).name  : $t('conserne_demand_from')+ $store.state.wilayas.find((itemf) => itemf.id == item.data.demande.wilaya_id).name }}</v-list-item-title
             >
           </v-list-item-content>
-
-          <v-list-item-action >
-            <v-btn depressed fab text small>
-                <v-icon small color="orange darken-4" right>
-                  mdi-open-in-new
-                </v-icon>
-              
-            </v-btn>
-          </v-list-item-action>
         </v-list-item>
       </template>
     </v-virtual-scroll>
@@ -43,11 +34,11 @@
 <script>
 export default {
   props: ["notifications"],
-
-  created() {},
+  created() {
+  },
   computed: {
     items() {
-      return this.notifications;
+      return this.notifications.notifications;
     },
   },
 };

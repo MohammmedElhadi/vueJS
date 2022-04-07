@@ -1,7 +1,8 @@
 <template>
   <div>
     <v-card class="pa-2 mx-auto elevation-5" outlined>
-      <v-card-title >{{$t('Demande_n')}} {{ demande.demande.id }}</v-card-title>
+      <v-card-title >{{$t('demand')}} {{ demande.demande.id }}</v-card-title>
+      <v-card-subtitle> {{ sinse }}</v-card-subtitle>
       <v-card-text>
         <v-row align-content="center">
           <v-col md="8" lg="8" xl="8" cols="12">
@@ -65,7 +66,7 @@
               :src="demande.image"
             ></v-img>
           </v-col>
-          <v-btn class="mx-8" v-if="$store.state.auth.authenticated" :key="fav" :class="fav ? 'red--text' : ''" icon @click="ToggleSaved">
+          <v-btn class="mx-8" v-if="$store.state.auth.authenticated"  :class="demande.is_saved ? 'red--text' : ''" icon @click="ToggleSaved">
             <v-icon>mdi-heart</v-icon> {{demande.likes>0 ? demande.likes: '' }} 
           </v-btn>
           <v-btn v-if="!detail" icon :to="'/demande/' + demande.demande.id">
@@ -77,10 +78,10 @@
     <v-expansion-panels>
       <v-expansion-panel>
         <v-expansion-panel-header v-if="owner" @click="show_detail = true">
-          Afficher les Offres</v-expansion-panel-header
+          {{$t('show_offres')}}</v-expansion-panel-header
         >
         <v-expansion-panel-header v-else @click="show_detail = true">
-         {{$t('proposer')}}</v-expansion-panel-header
+         {{$t('propose')}}</v-expansion-panel-header
         >
         <offers-list 
           v-if="owner && show_detail"
@@ -102,16 +103,22 @@
 import { HTTP } from '../http-constants';
 import OffersList from "./OffersList.vue";
 import offre from "./offre.vue";
+import {djs} from '../plugins/dayjs';
 
 export default {
   components: { offre, OffersList },
   props: ["demande" , "detail"],
    data: () => ({
    fav : false,
-   show_detail : false
+   show_detail : false,
+   favkey : 1
    }),
   computed: {
-    
+    sinse(){
+      // djs.locale('ar-dz');
+      // return djs(this.demande.demande.updated_at).locale('ar-dz').format();
+      return djs(this.demande.demande.updated_at).fromNow();
+    },
     owner() {
 
       return this.demande.demande.user_id === this.$store.state.auth.user.id ;
@@ -140,7 +147,7 @@ export default {
      HTTP.get('api/demande/'+this.demande.demande.id+'/ToggleSaved')
      .then((response)=> {
        console.log(response.data)
-       this.fav           = response.data.is_saved;
+       this.demande.is_saved = response.data.is_saved;
        this.demande.likes = response.data.likes
      }).catch(()=>{
        console.log('error')
@@ -148,10 +155,11 @@ export default {
    },
   },
   created(){
-    this.fav = this.demande.is_saved
   },
   mounted(){
-    this.fav = this.demande.is_saved
+
+  },
+  updated(){
   }
 };
 </script>

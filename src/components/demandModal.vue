@@ -9,9 +9,9 @@
       <v-card>
         <v-form ref="form" class="mx-2" lazy-validation>
           <v-card-title>
-            <span class="text-h5">Nouvelle demande</span>
+            <span class="text-h5">{{$t('new_demand')}} </span>
             <v-spacer />
-            <v-btn icon dark @click="dialog = false">
+            <v-btn icon dark @click="demande_dialog = false">
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
@@ -20,19 +20,19 @@
               <v-container>
                 <v-stepper-header>
                   <v-stepper-step :complete="e1 > 1" step="1">
-                    Marque et modele de véhicule
+                    {{$t('Marque_modele')}}
                   </v-stepper-step>
 
                   <v-divider></v-divider>
 
                   <v-stepper-step :complete="e1 > 2" step="2">
-                    Catégorie de la piece
+                    {{$t('category')}}
                   </v-stepper-step>
 
                   <v-divider></v-divider>
 
                   <v-stepper-step step="3">
-                    information additionnel
+                    {{$t('additionnel')}}
                   </v-stepper-step>
                 </v-stepper-header>
                 <v-stepper-items>
@@ -45,7 +45,7 @@
                           item-text="nom_ar"
                           item-value="id"
                           :rules="typeRules"
-                          label="Type de la véhicule"
+                          :label="$t('type')"
                           required
                           v-model="demand.type"
                           @change="getMarques()"
@@ -60,7 +60,7 @@
                           :items="marques"
                           item-text="nom_ar"
                           item-value="id"
-                          label="Marque de la véhicule"
+                          :label="$t('marque')"
                           required
                           v-model="demand.marques"
                           @change="getModeles()"
@@ -86,7 +86,7 @@
                           :items="modeles"
                           item-text="nom_ar"
                           item-value="id"
-                          label="Modele de la véhicule"
+                          :label="$t('modele')"
                           v-model="demand.modeles"
                           required
                           multiple
@@ -108,7 +108,7 @@
                       </v-col>
                       <v-col cols="12" xl="10" lg="10" md="10">
                         <v-file-input
-                          label="Photos de la pièce"
+                          :label="$t('photos')"
                           prepend-icon="mdi-camera"
                           multiple
                           show-size
@@ -130,7 +130,7 @@
                           :items="categories"
                           item-text="nom_fr"
                           item-value="id"
-                          label="Categories de la pièce"
+                          :label="$t('category')"
                           :rules="categoryRules"
                           multiple
                           v-model="demand.categories"
@@ -157,7 +157,7 @@
                           :items="subcategories"
                           item-text="nom_fr"
                           item-value="id"
-                          label="Sous categorie de la piece"
+                          :label="$t('subcategory')"
                           v-model="demand.subcategories"
                           multiple
                           @change="getSubSubCategories($event)"
@@ -183,7 +183,7 @@
                           :items="subsubcategories"
                           item-text="nom_fr"
                           item-value="id"
-                          label="Sous sous categorie de la piece"
+                          :label="$t('subsubcategory')"
                           v-model="demand.subsubcategories"
                           multiple
                         >
@@ -213,7 +213,7 @@
                           auto-grow
                           dense
                           clear-icon="mdi-close-circle"
-                          label="Note"
+                         :label="$t('note')"
                           v-model="demand.note"
                         ></v-textarea>
                       </v-col>
@@ -224,7 +224,7 @@
                           item-text="name"
                           :rules="wilayaRules"
                           item-value="id"
-                          label="Wilaya de la demande"
+                          :label="$t('wilaya_demand')"
                           prepend-icon="mdi-google-maps"
                           required
                           v-model="demand.wilaya"
@@ -241,7 +241,7 @@
                           :rules="etatRules"
                           item-text="nom_fr"
                           item-value="id"
-                          label="Etat de la pièce"
+                          :label="$t('etat_demand')"
                           required
                           prepend-icon="mdi-circle"
                           v-model="demand.etat"
@@ -261,7 +261,7 @@
                 v-show="e1 > 1"
                 @click="e1 = e1 - 1"
               >
-                Precident
+                {{$t('previous')}}
               </v-btn>
               <v-spacer></v-spacer>
               <v-btn
@@ -270,7 +270,7 @@
                 v-show="e1 < 3"
                 @click="e1 = e1 + 1"
               >
-                Suivant
+                {{$t('next')}}
               </v-btn>
               <v-btn
                 color="success"
@@ -278,7 +278,7 @@
                 v-show="e1 == 3"
                 @click.prevent="submitDemande()"
               >
-                Demander
+                {{$t('make_demand')}}
               </v-btn>
             </v-card-actions>
           </v-stepper>
@@ -406,7 +406,6 @@ export default {
       data.append("etat", this.demand.etat);
       data.append("note", this.demand.note);
       data.append("wilaya", this.demand.wilaya);
-
       if (this.$store.state.auth.authenticated) {
         if (this.$refs.form.validate()) {
           HTTP.post("api/demande", data, config)

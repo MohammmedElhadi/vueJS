@@ -4,8 +4,8 @@ import DemandesList from '../views/DemandesList'
 import MyDemandesList from '../views/MyDemandesList'
 import DemandesAime from '../views/DemandesAime'
 import DemandesVues from '../views/DemandesVues'
-import test from '../views/test'
 import detail from "../views/detail";
+import profile from "../views/profile";
 
 
 
@@ -19,10 +19,11 @@ const routes = [
         component: DemandesList
     },
     {
-        path: '/test',
-        name: 'test',
-        component: test
+        path: '/profile/',
+        name: 'profile',
+        component: profile
     },
+
     {
         path: '/demande/my_demandes/:id',
         name: 'my-demandes',

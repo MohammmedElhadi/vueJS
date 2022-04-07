@@ -30,7 +30,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click="dialog = false">
-              I accept
+              {{$t('fermer')}}
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -44,7 +44,7 @@
         <template v-slot:body="{ items }">
           <tbody>
             <tr v-for="item in items" :key="item.id" >
-              <td @click="showDetail(item)">{{ item.reponse.wilaya_id }}</td>
+              <td @click="showDetail(item)">{{ $store.state.wilayas.find((ss) => ss.id = item.reponse.wilaya_id ).arabic_name}}</td>
               <td @click="showDetail(item)">{{ item.etat }}</td>
               <td @click="showDetail(item)">{{ item.reponse.prix_offert }}</td>
               <td><v-chip small> <a :href="'tel:'+item.phone">{{item.phone}}</a></v-chip></td>
@@ -84,15 +84,8 @@ export default {
       HTTP.get("api/reponse/" + this.demande_id + "/all")
         .then((response) => {
           if (response.status == 200) {
-            // console.log(response.data);
             this.offers = response.data;
             this.loading = false;
-            // this.offer.prix_offert = offer.prix_offert;
-            // this.offer.wilaya_id = offer.wilaya_id;
-            // this.offer.etat_id = offer.etat_id;
-            // this.offer.note = offer.note;
-            // // console.log(response.data.image)
-            // this.offer.url = (response.data.image)
           } else return;
         })
         .catch(() => {

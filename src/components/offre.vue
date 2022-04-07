@@ -77,7 +77,7 @@
         :disabled="disabled"
         @click="SubmitOffer()"
       >
-        {{$t('repondre')}}
+        {{$t('responde')}}
       </v-btn>
       <v-dialog  v-if="offer.id" v-model="delete_dialog" width="500">
         <template v-slot:activator="{ on, attrs }">
@@ -92,7 +92,7 @@
             v-bind="attrs"
             v-on="on"
           >
-            {{$t('retirer')}}
+            {{$t('remove_offer')}}
           </v-btn>
         </template>
 
@@ -209,6 +209,7 @@ export default {
       }
       else{
         if (this.auth) {
+
         let formData = new FormData();
         formData.append("demande_id", this.demande_id);
         formData.append("prix_offert", this.offer.prix_offert);
@@ -219,13 +220,14 @@ export default {
           let im = new Blob(this.offer.image);
           formData.append("image", im);
         }
+        // debugger
         HTTP.post("api/demande/" + this.demande_id + "/offer", formData)
           .then((response) => {
             if (response.status == 200) {
               console.log(response.data.id);
               this.offer.id = response.data.id;
               this.disabled = true;
-              this.$toasted.success("Offre créé avec succés", {
+              this.$toasted.success(this.$t("offer_created_success"), {
                 theme: "bubble",
                 position: "top-center",
                 duration: 3000,

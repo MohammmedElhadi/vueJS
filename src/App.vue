@@ -2,19 +2,16 @@
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawer" app clipped :right="$vuetify.rtl">
       <v-list dense>
-        <v-list-item v-if="auth">
-          <v-list-item-action> 
+        <v-list-item link :to="{ name: 'profile' }" v-if="auth">
+          <v-list-item-action>
             <v-avatar color="indigo">
               <v-icon dark> mdi-account-circle </v-icon>
             </v-avatar>
           </v-list-item-action>
           <v-list-item-content>
-            
             <v-list-item-title>{{ logged_user.name }}</v-list-item-title>
             <v-list-item-subtitle>{{ logged_user.phone }}</v-list-item-subtitle>
           </v-list-item-content>
-
-          
         </v-list-item>
 
         <v-list-item link :to="{ name: 'accueil' }">
@@ -22,18 +19,20 @@
             <v-icon>mdi-home </v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>{{$t('Accueil')}}</v-list-item-title>
+            <v-list-item-title>{{ $t("home") }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
-
-        
-        <v-list-item v-if="auth" link :to="{name: 'my-demandes' , params : {id : logged_user.id } }">
+        <v-list-item
+          v-if="auth"
+          link
+          :to="{ name: 'my-demandes', params: { id: logged_user.id } }"
+        >
           <v-list-item-action>
             <v-icon>mdi-file-document-multiple</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>{{$t('mes_demandes')}}</v-list-item-title>
+            <v-list-item-title>{{ $t("my_demands") }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item v-if="auth" link :to="{ name: 'demandes-vues' }">
@@ -41,7 +40,7 @@
             <v-icon>mdi-file-eye</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>{{$t('demandes_vues')}} </v-list-item-title>
+            <v-list-item-title>{{ $t("seen_demands") }} </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item v-if="auth" link :to="{ name: 'demandes-aime' }">
@@ -49,14 +48,14 @@
             <v-icon>mdi-heart</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>{{$t('demandes_aime')}}</v-list-item-title>
+            <v-list-item-title>{{ $t("loved_demands") }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item v-if="auth" @click="logout">
           <v-list-item-action>
             <v-btn v-if="auth" icon><v-icon>mdi-logout</v-icon></v-btn>
           </v-list-item-action>
-          <v-list-item-title>{{$t('deconnecter')}}</v-list-item-title>
+          <v-list-item-title>{{ $t("disconnect") }}</v-list-item-title>
         </v-list-item>
         <v-list-item v-else>
           <v-list-item-title>
@@ -65,23 +64,36 @@
           </v-list-item-title>
         </v-list-item>
         <v-list-item>
-          <v-switch v-model="$vuetify.theme.dark" :label="$t('dark_mode')"></v-switch>
-          <v-spacer/>
+          <v-switch
+            v-model="$vuetify.theme.dark"
+            :label="$t('dark_mode')"
+          ></v-switch>
+
           <!-- Language  -->
           <v-menu v-model="languageMenu" offset-y>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn class="text-capitalize" v-bind="attrs" v-on="on" text>
-                  <v-icon left>mdi-earth</v-icon>
-                  {{ activeLang }}
-                  <v-icon small right>mdi-menu-down</v-icon>
-                </v-btn>
-              </template>
-              <v-list dense>
-                <v-list-item v-for="(lang, index) in langs" :key="index" @click="handleMenuItemClick(lang)">
-                  <v-list-item-title>{{ lang.title }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                class="text-capitalize"
+                v-bind="attrs"
+                v-on="on"
+                text
+                small
+              >
+                <v-icon left>mdi-earth</v-icon>
+                {{ activeLang }}
+                <v-icon small right>mdi-menu-down</v-icon>
+              </v-btn>
+            </template>
+            <v-list dense>
+              <v-list-item
+                v-for="(lang, index) in langs"
+                :key="index"
+                @click="handleMenuItemClick(lang)"
+              >
+                <v-list-item-title>{{ lang.title }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -89,13 +101,13 @@
     <v-app-bar app clipped-left>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <demand-modal></demand-modal>
-      <v-menu :close-on-content-click="true" :nudge-width="200" offset-x left>
+      <v-menu :close-on-content-click="true" :nudge-width="200" offset-x left >
         <template v-slot:activator="{ on, attrs }">
           <v-btn class="mx-3" v-bind="attrs" v-on="on" icon>
             <v-badge
               v-if="notifications"
-              :content="notifications_count"
-              :value="notifications_count"
+              :content="notificationKey"
+              :value="notificationKey"
               color="red"
             >
               <v-icon>mdi-bell</v-icon>
@@ -136,11 +148,11 @@ export default {
     Notificationssource: String,
   },
   data: () => ({
-     langs: [
-        { title: 'Français', abr:'fr' , rtl : false },
-        { title: 'العربية', abr: 'ar', rtl : true }
-      ],
-    activeLang: 'Français',
+    langs: [
+      { title: "Français", abr: "fr", rtl: false },
+      { title: "العربية", abr: "ar", rtl: true },
+    ],
+    activeLang: "Français",
     dialog: false,
     languageMenu: false,
     drawer: null,
@@ -156,15 +168,13 @@ export default {
     ...mapActions({
       singOut: "auth/logout",
     }),
-
-    forceRerenderNotifications() {
-      this.notificationKey += 1;
-    },
     getNotifications() {
       HTTP.get("api/notification")
         .then((response) => {
           this.notifications = response.data;
-          console.log(this.notifications)
+          if (this.notifications)
+            this.notificationKey = this.notifications.count;
+          console.log(this.notifications.notifications[0]);
         })
         .catch((error) => {
           console.log(error);
@@ -182,24 +192,23 @@ export default {
           duration: 5000,
           keepOnHover: true,
         });
+        this.$router.go();
       });
     },
     RefreshU() {
       this.logged_user = this.$store.state.auth.user;
       this.auth = this.$store.state.auth.authenticated;
     },
-    initLanguage(){
-      let lang = this.langs.find(
-        (item) => item.abr == this.$i18n.locale
-      );
-       this.activeLang = lang.title
-       this.$vuetify.rtl = lang.rtl
-    },
-    handleMenuItemClick(lang){
+    initLanguage() {
+      let lang = this.langs.find((item) => item.abr == this.$i18n.locale);
       this.activeLang = lang.title;
-      this.$i18n.locale = lang.abr
-      this.$vuetify.rtl = lang.rtl
-    }
+      this.$vuetify.rtl = lang.rtl;
+    },
+    handleMenuItemClick(lang) {
+      this.activeLang = lang.title;
+      this.$i18n.locale = lang.abr;
+      this.$vuetify.rtl = lang.rtl;
+    },
   },
   computed: {
     auth() {
@@ -209,93 +218,62 @@ export default {
       return this.$store.state.auth.user;
     },
     notifications_count() {
-      return this.notifications.length;
+      return this.notifications.count;
     },
   },
   created() {
-    this.initLanguage();
+    if (this.auth) {
+      let lang = this.langs.find(
+        (item) => item.abr == this.$store.state.auth.user.lang
+      );
+      this.$i18n.locale = lang.abr;
+      this.activeLang = lang.title;
+      this.$vuetify.rtl = lang.rtl;
+    } else this.initLanguage();
     this.$store.dispatch("auth/login");
     this.$vuetify.theme.dark = true;
     this.getNotifications();
-
-     this.$echo.private('demands_channel_'+ this.logged_user.id).listen('NewDemandeAdded', (payload) => {
-             let demande = payload["data"]["demande"]
-             this.notifications.unshift({"demande" : demande ,
-                                          'type' : demande.types[0] }
-                                        );
-              this.$toasted.show("une demande a été ajoutée !!", {
-                      theme: ["bubble" , 'info'],
-                      position: "botom-center",
-                      duration: 5000,
-                      keepOnHover: true,
-                      action: [
-                          {
-                              text: 'Cancel',
-                              onClick: (e, toastObject) => {
-                                  toastObject.goAway(0);
-                              }
-                          }
-                      ]
-                  });
-             this.forceRerenderNotifications();
+    if (this.auth) {
+      this.$echo
+        .private("demands_channel_" + this.logged_user.id)
+        .listen("NewDemandeAdded", (payload) => {
+          this.notifications.notifications.unshift(payload.notification);
+          this.notificationKey += 1;
+          this.$toasted.success("Demande a été ajouté", {
+            theme: "bubble",
+            position: "top-center",
+            duration: 5000,
+            keepOnHover: true,
+          });
+          var audio = new Audio(require("./audio/reponse_notification.wav")); // path to file
+          audio.play();
         });
-      
-     this.$echo.private('reponses_channel_'+ this.logged_user.id).listen('NewReponseAdded', (e) => {
-           console.log(e)
+      this.$echo
+        .private("response_for_" + this.logged_user.id)
+        .listen("NewReponseAdded", (payload) => {
+          this.notifications.notifications.unshift(payload.notification);
+          this.notificationKey += 1;
+          this.$toasted.success(
+            "un offre a été ajouté sur la demande " +
+              payload.notification.data.demande.id,
+            {
+              theme: "bubble",
+              position: "bottom-right",
+              duration: 5000,
+              keepOnHover: true,
+            }
+          );
+
+          var audio = new Audio(require("./audio/reponse_notification.wav")); // path to file
+          audio.play();
         });
-      
-
-
-    
-    // this.$echo
-    //   .private("App.Models.User." + this.$store.state.auth.user.id)
-    //   .notification((payload) => {
-    //     console.log("payload");
-    //     console.log(payload.type);
-    //     // console.log("noties");
-    //     // console.log(this.notifications[0]);
-    //     // this.notifications.unshift(payload["data"]);
-    //     // this.$toasted.show("une demande a été ajoutée !!", {
-    //     //     theme: "bubble",
-    //     //     position: "top-center",
-    //     //     duration: 5000,
-    //     //     keepOnHover: true,
-    //     //     action: [
-    //     //         {
-    //     //             text: 'Cancel',
-    //     //             onClick: (e, toastObject) => {
-    //     //                 toastObject.goAway(0);
-    //     //             }
-    //     //         }
-    //     //     ]
-    //     // });
-    //     this.forceRerenderNotifications();
-    //   });
-
-    // this.$echo
-    //   .channel("App.Models.User." + this.logged_user.id)
-    //   .listen("BroadcastNotificationCreated", (payload) => {
-    //     console.log("payload");
-    //     console.log(payload["data"]);
-    //     console.log("noties");
-    //     console.log(this.notifications[0]);
-    //     this.notifications.unshift(payload["data"]);
-    //     this.$toasted.show("Quelqu'un a repondu sur votre demande", {
-    //       theme: "bubble",
-    //       position: "top-center",
-    //       duration: 5000,
-    //       keepOnHover: true,
-    //       action: [
-    //         {
-    //           text: "Cancel",
-    //           onClick: (e, toastObject) => {
-    //             toastObject.goAway(0);
-    //           },
-    //         },
-    //       ],
-    //     });
-    //     this.forceRerenderNotifications();
-    //   });
+    }
+  },
+  beforeCreate(){
+    if (this.auth) {
+      this.$i18n.locale = this.$store.state.auth.user.lang
+      // this.$vuetify.rtl = lang.rtl;
+    }
   },
   destroyed() {
     this.singOut();

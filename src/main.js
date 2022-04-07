@@ -14,13 +14,15 @@ import Toasted from 'vue-toasted';
 Vue.use(Toasted)
 
 /*********************************/
-import VueSweetalert2 from 'vue-sweetalert2';
-Vue.use(VueSweetalert2);
+// import VueSweetalert2 from 'vue-sweetalert2';
+// Vue.use(VueSweetalert2);
 
 /*********************************/
 import { VueMaskDirective } from 'v-mask'
 Vue.directive('mask', VueMaskDirective);
 /*********************************/
+import VueResizeText from 'vue-resize-text';
+Vue.use(VueResizeText)
 /*********************************/
 import VueEcho from 'vue-echo-laravel';
 window.Pusher = require('pusher-js');
