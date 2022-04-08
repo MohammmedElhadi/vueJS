@@ -206,20 +206,16 @@ export default {
                   keepOnHover: true,
                 });
               }
-              if(response.status == 419){
-                  this.$toasted.success(this.$t("reconnect_plz"), {
+            })
+            .catch(() => {
+                  this.$toasted.error(this.$t("reconnect_plz"), {
                   theme: "bubble",
                   position: "top-center",
                   duration: 3000,
-                  keepOnHover: true,
                 });
-              }
-            })
-            .catch((error) => {
-              return [error];
             });
         } else {
-          this.$toasted.show("Vous devez s'inscrire ou se connecter", {
+          this.$toasted.error("Vous devez s'inscrire ou se connecter", {
             theme: "bubble",
             position: "top-center",
             duration: 3000,
@@ -246,11 +242,10 @@ export default {
             this.disabled = false;
             this.has_offer = false;
             this.$emit("remove_offer");
-            this.$toasted.danger("Offre retiré avec succés", {
+            this.$toasted.error("Offre retiré avec succés", {
               theme: ["bubble", "outlined"],
               position: "top-center",
-              duration: 5000,
-              keepOnHover: true,
+              duration: 3000,
             });
           }
         })

@@ -2,14 +2,7 @@
   <v-row justify="center">
     <v-dialog v-model="demande_dialog" max-width="90%">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          small
-          fab
-          v-bind="attrs"
-          right
-          v-on="on"
-          color="primary"
-        >
+        <v-btn small fab v-bind="attrs" right v-on="on" color="primary">
           <v-icon>mdi-plus</v-icon>
         </v-btn>
       </template>
@@ -49,26 +42,36 @@
                         <!-- Type -->
                         <v-autocomplete
                           :items="types"
-                          :item-text=" getName()"
+                          clearable
+                          :item-text="getName()"
                           item-value="id"
                           :rules="typeRules"
                           :label="$t('type')"
-                          required
                           v-model="demand.type"
                           @change="getMarques()"
                         >
-                        </v-autocomplete>
+                        </v-autocomplete> 
                       </v-col>
-                      <v-col cols="12" xl="10" lg="10" md="10">
+                        <v-col cols="12" xl="10" lg="10" md="10" v-show="is_vehicule">
+                        <v-autocomplete
+                          :items="continents"
+                          clearable
+                          :item-text="getName()"
+                          item-value="id"
+                          :label="$t('origine')"
+                          v-model="demand.continent"
+                        >
+                        </v-autocomplete>
+                        </v-col>
+                      <v-col cols="12" xl="10" lg="10" md="10" v-show="is_automobile">
                         <!-- marques -->
                         <v-autocomplete
                           multiple
                           chips
                           :items="marques"
-                          :item-text=" getName()"
+                          :item-text="getName()"
                           item-value="id"
                           :label="$t('marque')"
-                          required
                           v-model="demand.marques"
                           @change="getModeles()"
                         >
@@ -82,20 +85,34 @@
                                 removeItem(data.item, demand.marques)
                               "
                             >
-                              {{  getName2(data.item)}}
+                              <v-avatar left>
+                                <v-img :src="data.item.logo"></v-img>
+                              </v-avatar>
+                              {{ getName2(data.item) }}
                             </v-chip>
+                          </template>
+                          <template v-slot:item="data">
+                            <template>
+                              <v-list-item-avatar>
+                                <img :src="data.item.logo" />
+                              </v-list-item-avatar>
+                              <v-list-item-content>
+                                <v-list-item-title
+                                  v-html="getName2(data.item)"
+                                ></v-list-item-title>   
+                              </v-list-item-content>
+                            </template>
                           </template>
                         </v-autocomplete>
                       </v-col>
-                      <v-col cols="12" xl="10" lg="10" md="10">
+                      <v-col cols="12" xl="10" lg="10" md="10" v-show="is_automobile">
                         <!-- modeles -->
                         <v-autocomplete
                           :items="modeles"
-                          :item-text=" getName()"
+                          :item-text="getName()"
                           item-value="id"
                           :label="$t('modele')"
                           v-model="demand.modeles"
-                          required
                           multiple
                         >
                           <template v-slot:selection="data">
@@ -108,7 +125,7 @@
                                 removeItem(data.item, demand.modeles)
                               "
                             >
-                              {{ getName2(data.item)}}
+                              {{ getName2(data.item) }}
                             </v-chip>
                           </template>
                         </v-autocomplete>
@@ -127,7 +144,7 @@
                         <!-- categories -->
                         <v-autocomplete
                           :items="categories"
-                          :item-text=" getName()"
+                          :item-text="getName()"
                           item-value="id"
                           :label="$t('category')"
                           :rules="categoryRules"
@@ -154,7 +171,7 @@
                         <!-- subcategories -->
                         <v-autocomplete
                           :items="subcategories"
-                          :item-text=" getName()"
+                          :item-text="getName()"
                           item-value="id"
                           :label="$t('subcategory')"
                           v-model="demand.subcategories"
@@ -171,7 +188,7 @@
                                 removeItem(data.item, demand.subcategories)
                               "
                             >
-                              {{ getName2(data.item)}}
+                              {{ getName2(data.item) }}
                             </v-chip>
                           </template>
                         </v-autocomplete>
@@ -180,7 +197,7 @@
                         <!-- subsubcategories -->
                         <v-autocomplete
                           :items="subsubcategories"
-                          :item-text=" getName()"
+                          :item-text="getName()"
                           item-value="id"
                           :label="$t('subsubcategory')"
                           v-model="demand.subsubcategories"
@@ -222,19 +239,25 @@
                         <!-- wilaya -->
                         <v-autocomplete
                           :items="wilayas"
-                          :item-text="$i18n.locale == 'fr' ? 'name' 
-                                       :'arabic_name'"
+                          :item-text="
+                            $i18n.locale == 'fr' ? 'name' : 'arabic_name'
+                          "
                           :rules="wilayaRules"
                           item-value="id"
                           :label="$t('wilaya_demand')"
                           prepend-icon="mdi-google-maps"
-                          required
                           v-model="demand.wilaya"
                         >
-                          <template v-slot:item="slotProps"
-                            >
-                              {{ $i18n.locale == 'fr' ? slotProps.item.code + " " +  slotProps.item.name 
-                                       : slotProps.item.code + " " + slotProps.item.arabic_name}}
+                          <template v-slot:item="slotProps">
+                            {{
+                              $i18n.locale == "fr"
+                                ? slotProps.item.code +
+                                  " " +
+                                  slotProps.item.name
+                                : slotProps.item.code +
+                                  " " +
+                                  slotProps.item.arabic_name
+                            }}
                           </template>
                         </v-autocomplete>
                       </v-col>
@@ -246,7 +269,7 @@
                           :item-text="getName()"
                           item-value="id"
                           :label="$t('etat_demand')"
-                          required
+                          
                           prepend-icon="mdi-circle"
                           v-model="demand.etat"
                         >
@@ -296,11 +319,13 @@ import { HTTP } from "../http-constants";
 
 export default {
   data: () => ({
-    typeRules: [(v) => !!v || "type is required"],
-    categoryRules: [(v) => v.length != 0 || "category is required"],
-    wilayaRules: [(v) => !!v || "wilaya is required"],
-    etatRules: [(v) => !!v || "Etat is required"],
-    noteRules: [(v) => v.length <= 500 || "moins de 500 caracteres"],
+    is_automobile: false,
+    is_vehicule: false,
+    typeRules: [(v) => !!v || "required"],
+    categoryRules: [(v) => v.length != 0 || "required"],
+    wilayaRules: [(v) => !!v || "required"],
+    etatRules: [(v) => !!v || "required"],
+    noteRules: [(v) => v.length <= 500 || ""],
     e1: 1,
     demande_dialog: false,
     demand: {
@@ -310,6 +335,7 @@ export default {
       categories: [],
       subcategories: [],
       subsubcategories: [],
+      continent: "",
       etat: "",
       note: "",
       wilaya: "",
@@ -317,6 +343,7 @@ export default {
     images: [],
     url: "",
     types: [],
+    continents: [],
     marques: [],
     modeles: [],
     categories: [],
@@ -324,15 +351,13 @@ export default {
     subsubcategories: [],
   }),
   methods: {
-    getName2(item){
-      if(this.$i18n.locale == 'fr')
-        return item.nom_fr;
-      else return  item.nom_ar;
+    getName2(item) {
+      if (this.$i18n.locale == "fr") return item.nom_fr;
+      else return item.nom_ar;
     },
-    getName(){
-      if(this.$i18n.locale == 'fr')
-        return "nom_fr";
-      else return  "nom_ar";
+    getName() {
+      if (this.$i18n.locale == "fr") return "nom_fr";
+      else return "nom_ar";
     },
     //Filepond Image
     demandImageUploaded(e) {
@@ -357,14 +382,35 @@ export default {
           console.log(error);
         });
     },
-    getMarques() {
-      HTTP.get("api/marque")
+    getContinents() {
+      HTTP.get("api/continent")
         .then((repsponse) => {
-          this.marques = repsponse.data;
+          this.continents = repsponse.data;
         })
         .catch((error) => {
           console.log(error);
         });
+    },
+    getMarques() {
+      if (this.demand.type == 2) {
+        this.is_automobile = true;
+        this.is_vehicule = false;
+        this.demand.continent = "";
+
+        HTTP.get("api/marque")
+          .then((repsponse) => {
+            this.marques = repsponse.data;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        this.is_vehicule = true;
+        this.demand.continent = "";
+        this.is_automobile = false;
+        this.demand.marques = [];
+        this.demand.modeles = [];
+      }
     },
     getModeles() {
       this.modeles = [];
@@ -413,6 +459,7 @@ export default {
         },
       };
       data.append("type", this.demand.type);
+      data.append("continent", this.demand.continent);
       data.append("marques", this.demand.marques);
       data.append("modeles", this.demand.modeles);
       data.append("categories", this.demand.categories);
@@ -432,7 +479,6 @@ export default {
                   theme: "bubble",
                   position: "top-center",
                   duration: 5000,
-                  keepOnHover: true,
                 });
                 if (this.$router.name == "demande") {
                   this.$router.replace({
@@ -461,11 +507,10 @@ export default {
           }
         }
       } else {
-        this.$toasted.show("Vous devez s'inscrire ou se connecter", {
+        this.$toasted.error("Vous devez s'inscrire ou se connecter", {
           theme: "bubble",
           position: "top-center",
           duration: 3000,
-          keepOnHover: true,
         });
       }
     },
@@ -481,6 +526,7 @@ export default {
 
   created() {
     this.getTypes();
+    this.getContinents();
     this.getCategories();
   },
 };

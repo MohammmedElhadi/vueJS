@@ -49,6 +49,7 @@ export default {
     this_is_not_reversible             :'Cette operation est irréversible'  ,
     yes_delete             :'Oui, Supprimer'  ,
     save             :'Sauvgarder'  ,
+    origine           : 'La source' ,
     //
     category                 :   'Categories de la pièce',
     subcategory                 :   'Sous categories',
@@ -67,7 +68,7 @@ export default {
     types           :'Types de véhicules',
     modeles           :'Modèles',
     marques           :'Marques',
-
+    profile           : 'Profile'
 
   },
 
@@ -133,6 +134,7 @@ export default {
     this_is_not_reversible             :'لن تتمكن من استعادته  بعد حذفه'  ,
     yes_delete             :'نعم، أحذف'  ,
     save             :'حفظ'  ,
+    origine           : 'مصدر القطعة' ,
     //
     contact_info           :'حول الإتصال',
     category_info           :' حول الأصناف ',
@@ -141,6 +143,7 @@ export default {
     types           :'أنواع المركبات',
     modeles           :'الموديلات',
     marques           :'العلامات',
+    profile           : 'الملف الشخصي'
 
   
 

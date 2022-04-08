@@ -76,31 +76,74 @@
                 </template>
               </v-autocomplete>
             </v-col>
-            <v-col cols="12">
-              <!-- marques -->
-              <v-autocomplete
-                multiple
-                chips
-                :items="marques"
-                :item-text="getName()"
-                item-value="id"
-                :label="$t('marques')"
-                required
-                v-model="user.marques"
-              >
-                <template v-slot:selection="data">
-                  <v-chip
-                    v-bind="data.attrs"
-                    :input-value="data.selected"
-                    close
-                    @click="data.select"
-                    @click:close="removeItem(data.item, user.marques)"
-                  >
-                    {{ getName2(data.item) }}
-                  </v-chip>
-                </template>
-              </v-autocomplete>
-            </v-col>
+         <v-col cols="12">
+                        <!-- Continent -->
+                        <v-autocomplete
+                          ref="types"
+                          :items="continents"
+                          :item-text="getName()"
+                          item-value="id"
+                          :label="$t('origine')"
+                          chips
+                          multiple
+                          v-model="user.continents"
+                          close
+                        >
+                          <template v-slot:selection="data">
+                            <v-chip
+                              v-bind="data.attrs"
+                              :input-value="data.selected"
+                              close
+                              @click="data.select"
+                              @click:close="
+                                removeItem(data.item, user.continents)
+                              "
+                            >
+                              {{ getName2(data.item) }}
+                            </v-chip>
+                          </template>
+                        </v-autocomplete>
+                      </v-col>
+                      <!-- marques -->
+                      <v-col cols="12">
+                        <v-autocomplete
+                          multiple
+                          chips
+                          :items="marques"
+                          :item-text="getName()"
+                          item-value="id"
+                          :label="$t('marque')"
+                          v-model="user.marques"
+                          @change="getModeles()"
+                        >
+                          <template v-slot:selection="data">
+                            <v-chip
+                              v-bind="data.attrs"
+                              :input-value="data.selected"
+                              close
+                              @click="data.select"
+                              @click:close="removeItem(data.item, user.marques)"
+                            >
+                              <v-avatar left>
+                                <v-img :src="data.item.logo"></v-img>
+                              </v-avatar>
+                              {{ getName2(data.item) }}
+                            </v-chip>
+                          </template>
+                          <template v-slot:item="data">
+                            <template>
+                              <v-list-item-avatar>
+                                <img :src="data.item.logo" />
+                              </v-list-item-avatar>
+                              <v-list-item-content>
+                                <v-list-item-title
+                                  v-html="getName2(data.item)"
+                                ></v-list-item-title>
+                              </v-list-item-content>
+                            </template>
+                          </template>
+                        </v-autocomplete>
+                      </v-col>
             <v-col cols="12">
               <!-- modeles -->
               <v-autocomplete
@@ -228,6 +271,7 @@ export default {
     /*************************************** */
     user: {},
     types: [],
+    continents: [],
     marques: [],
     modeles: [],
     categories: [],
@@ -263,6 +307,7 @@ export default {
         this.user.phone = data.phone;
         this.user.wilaya = data.wilaya_id;
         this.user.types = data.types.map((a) => a.id);
+        this.user.continents = data.continents.map((a) => a.id);
         this.user.marques = data.marques.map((a) => a.id);
         this.user.modeles = data.modeles.map((a) => a.id);
         this.user.categories = data.categories.map((a) => a.id);
@@ -276,12 +321,32 @@ export default {
     },
     init() {
       this.getTypes();
+      this.getContinents();
       this.getMarques();
       this.getCategories();
+      this.getAllModeles();
+      this.getAllSubCategories();
+      this.getAllSubSubCategories();
     },
     async getTypes() {
       let response = await HTTP.get("api/type");
       this.types = response.data;
+    },
+    async getContinents() {
+      let response = await HTTP.get("api/continent");
+      this.continents = response.data;
+    },
+    async getAllModeles() {
+      let response = await HTTP.get("api/modele");
+      this.modeles = response.data;
+    },
+    async getAllSubCategories() {
+      let response = await HTTP.get("api/subcategory");
+      this.subcategories = response.data;
+    },
+    async getAllSubSubCategories() {
+      let response = await HTTP.get("api/subcategory2");
+      this.subsubcategories = response.data;
     },
     async getMarques() {
       let response = await HTTP.get("api/marque");

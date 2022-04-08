@@ -29,7 +29,7 @@ export default {
       this.getDemandes();
     },
     async getDemandes() {
-      let response = await HTTP.get("api/demande/");
+      let response = await HTTP.get("api/demande");
       this.demandes = response.data;
     },
   },

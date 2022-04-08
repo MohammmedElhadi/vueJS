@@ -114,8 +114,11 @@
 
             <br />
             <div v-if="demande.demande.note">
-              <v-icon small>mdi-note</v-icon>
-              {{ demande.demande.note }}
+            <div :class="!$vuetify.theme.dark? 'black--text':'white--text'" class="font-weight-bold">
+              
+            <!-- <div class="black--text font-weight-bold"> -->
+                {{ demande.demande.note }}
+            </div>
             </div>
             <v-chip-group>
               <v-chip small color="success">

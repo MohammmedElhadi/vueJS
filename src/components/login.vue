@@ -88,6 +88,7 @@ export default {
                   duration: 5000,
                   keepOnHover: true,
                 });
+                
                 this.$router.go()
               }
             })

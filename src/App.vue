@@ -3,7 +3,7 @@
     <v-navigation-drawer v-model="drawer" app clipped :right="$vuetify.rtl">
       <v-list dense>
         <v-list-item link :to="{ name: 'profile' }" v-if="auth">
-        <!-- <v-list-item  v-if="auth"> -->
+          <!-- <v-list-item  v-if="auth"> -->
           <v-list-item-action>
             <v-avatar color="indigo">
               <v-icon dark> mdi-account-circle </v-icon>
@@ -107,12 +107,12 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app clipped-left clipped-right >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>   
-      <demand-modal ></demand-modal>
+    <v-app-bar app clipped-left clipped-right>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <demand-modal></demand-modal>
       <v-menu :close-on-content-click="true" :nudge-width="200" offset-x left>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn  class="mx-3" v-bind="attrs" v-on="on" icon>
+          <v-btn class="mx-3" v-bind="attrs" v-on="on" icon>
             <v-badge
               :content="notificationKey"
               :value="notificationKey"
@@ -212,7 +212,7 @@ export default {
       this.$i18n.locale = this.user.lang;
     },
     initLanguage() {
-      if(this.auth){
+      if (this.auth) {
         this.$i18n.locale = this.user.lang;
       }
       let lang = this.langs.find((item) => item.abr == this.$i18n.locale);
@@ -220,39 +220,15 @@ export default {
       this.$vuetify.rtl = lang.rtl;
     },
     handleMenuItemClick(lang) {
-      HTTP.post('api/user/lang' , lang)
-          .then((response) =>{
-              console.log(response.data)
-          })
+      HTTP.post("api/user/lang", lang).then((response) => {
+        console.log(response.data);
+      });
       this.activeLang = lang.title;
       this.$i18n.locale = lang.abr;
       this.$vuetify.rtl = lang.rtl;
     },
-  },
-  computed: {
-    auth() {
-      return this.$store.state.auth.authenticated;
-    },
-    logged_user() {
-      return this.$store.state.auth.user;
-    },
-    notifications_count() {
-      return this.notifications.count;
-    },
-  },
-  created() {
-    if (this.auth) {
-      let lang = this.langs.find(
-        (item) => item.abr == this.$store.state.auth.user.lang
-      );
-      this.$i18n.locale = lang.abr;
-      this.activeLang = lang.title;
-      this.$vuetify.rtl = lang.rtl;
-    } else this.initLanguage();
-    this.$store.dispatch("auth/login");
-    this.$vuetify.theme.dark = true;
-    this.getNotifications();
-    if (this.auth) {
+
+    async initListners() {
       this.$echo
         .private("demands_channel_" + this.logged_user.id)
         .listen("NewDemandeAdded", (payload) => {
@@ -286,13 +262,38 @@ export default {
           var audio = new Audio(require("./audio/reponse_notification.wav")); // path to file
           audio.play();
         });
-    }
+    },
+  },
+  computed: {
+    auth() {
+      return this.$store.state.auth.authenticated;
+    },
+    logged_user() {
+      return this.$store.state.auth.user;
+    },
+  },
+
+  created() {
+    this.getNotifications();
+    if (this.auth) {
+      let lang = this.langs.find(
+        (item) => item.abr == this.$store.state.auth.user.lang
+      );
+      this.$i18n.locale = lang.abr;
+      this.activeLang = lang.title;
+      this.$vuetify.rtl = lang.rtl;
+    } else this.initLanguage();
+    this.$store.dispatch("auth/login");
+    this.$vuetify.theme.dark = true;
   },
   beforeCreate() {
     if (this.auth) {
       this.$i18n.locale = this.$store.state.auth.user.lang;
       // this.$vuetify.rtl = lang.rtl;
     }
+  },
+  updated() {
+        this.initListners();
   },
   destroyed() {
     this.singOut();
