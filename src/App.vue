@@ -275,6 +275,7 @@ export default {
 
   created() {
     this.getNotifications();
+    this.initListners();
     if (this.auth) {
       let lang = this.langs.find(
         (item) => item.abr == this.$store.state.auth.user.lang
@@ -282,7 +283,8 @@ export default {
       this.$i18n.locale = lang.abr;
       this.activeLang = lang.title;
       this.$vuetify.rtl = lang.rtl;
-    } else this.initLanguage();
+    } else 
+      this.initLanguage();
     this.$store.dispatch("auth/login");
     this.$vuetify.theme.dark = true;
   },
@@ -293,7 +295,7 @@ export default {
     }
   },
   updated() {
-        this.initListners();
+        
   },
   destroyed() {
     this.singOut();
