@@ -5,15 +5,23 @@ import MyDemandesList from '../views/MyDemandesList'
 import DemandesAime from '../views/DemandesAime'
 import DemandesVues from '../views/DemandesVues'
 import DemandesRepondue from '../views/DemandesRepondue'
+import DemandesFilter from '../views/DemandesFilter'
 import detail from "../views/detail";
 import profile from "../views/profile";
+import users from "../views/users";
 
 
 
 Vue.use(VueRouter);
 
 const routes = [
+    
 
+    {
+        path: '/admin',
+        name: 'users',
+        component: users
+    },
     {
         path: '/',
         name: 'accueil',
@@ -45,6 +53,12 @@ const routes = [
         path: '/demande/DemandesRepondue',
         name: 'demandes-repondue',
         component: DemandesRepondue
+    },
+    {
+        path: '/demande/:filter/:id',
+        name: 'demandes-filter',
+        props: true,
+        component: DemandesFilter
     },
 
     {

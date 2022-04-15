@@ -5,6 +5,9 @@
         <v-icon large>mdi-refresh</v-icon>
       </v-btn>
     </div>
+    <!-- <div v-if="demandes.length == 0">
+          <h1>No demandes yet</h1>
+    </div> -->
     <div class="my-5 px-1" v-for="(demande, index) in demandes" :key="index">
       <demande :demande="demande" :detail="detail"></demande>
     </div>
@@ -29,7 +32,7 @@ export default {
       this.getDemandes();
     },
     async getDemandes() {
-      let response = await HTTP.get("api/demande");
+      let response = await HTTP.get("api/demande/");
       this.demandes = response.data;
     },
   },

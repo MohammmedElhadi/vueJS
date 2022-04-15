@@ -60,10 +60,11 @@
         <template v-slot:body="{ items }">
           <tbody>
             <tr v-for="item in items" :key="item.id" >
-              <td @click="showDetail(item)">{{ $store.state.wilayas.find((ss) => ss.id = item.reponse.wilaya_id ).arabic_name}}</td>
+              <td @click="showDetail(item)">{{getName(item)}}</td>                                             
               <td @click="showDetail(item)">{{ item.etat }}</td>
               <td @click="showDetail(item)">{{ item.reponse.prix_offert }}</td>
               <td><v-chip small> <a :href="'tel:'+item.phone">{{item.phone}}</a></v-chip></td>
+              <td @click="showDetail(item)">{{ time(item) }}</td>
             </tr>
           </tbody>
         </template>
@@ -73,17 +74,12 @@
 </template>
 <script>
 import { HTTP } from "../http-constants";
+import { djs } from "../plugins/dayjs";
 export default {
   props: ["demande_id"],
   data: () => ({
     dialog: false,
     loading: false,
-    headers: [
-    { text: "Wilaya"},
-      { text: "Etat"},
-      { text: "Prix"},
-      { text: "Phone"},
-    ],
     offers: [],
     offer: {
       wilaya: "",
@@ -94,7 +90,34 @@ export default {
       images : "",
     },
   }),
+  computed :{
+      headers() {
+        return [
+                  { text: this.$t("wilaya")},
+                  { text: this.$t("etat")},
+                  { text: this.$t("prix")},
+                  { text: this.$t("tel")},
+                  { text: this.$t("since")},
+                ]
+      },
+     wilayas() {
+      return this.$store.state.wilayas;
+    },
+  },
   methods: {
+    time(item){
+      this.$i18n.locale == 'ar' ?djs.locale('ar-dz') :  djs.locale(this.$i18n.locale) 
+      return djs(item.created_at).fromNow();
+    },
+    getName(item){
+         let wilaya = this.wilayas.find(
+           (ss) => ss.id == item.reponse.wilaya_id 
+           )
+         return this.$i18n.locale == 'fr' ?   wilaya.code + " " +  wilaya.name 
+                                       : wilaya.code + " " + wilaya.arabic_name;
+    },
+    
+
     getOffers() {
       
       this.loading = true;
@@ -102,7 +125,6 @@ export default {
         .then((response) => {
           if (response.status == 200) {
             this.offers = response.data;
-            console.log(this.offers)
             this.loading = false;
           } else return;
         })
@@ -118,13 +140,10 @@ export default {
       this.offer.note =  it.reponse.note
       this.offer.phone =  it.phone
       this.offer.images =  it.images
-      console.log(it.image);
       this.dialog = true;
     },
   },
   mounted() {
-    console.log(this.demande_id)
-    console.log(this.offers)
     this.getOffers();
   },
 };

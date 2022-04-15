@@ -1,6 +1,14 @@
 <template>
   <div>
-    <v-dialog v-model="dialog" max-width="800px">
+    <v-dialog v-model="dialog" 
+      max-width="800px"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+      scrollable
+      
+      >
+      
       <template v-slot:activator="{ on, attrs }">
         <v-btn text class="my-2" block v-bind="attrs" right v-on="on" outlined>
           {{$t('login')}}
@@ -8,7 +16,12 @@
       </template>
       <v-card>
         <v-form ref="form" class="mx-2" lazy-validation>
-          <v-card-title>{{$t('login')}}</v-card-title>
+          <v-card-title>{{$t('login')}}
+             <v-spacer />
+            <v-btn icon @click="dialog = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
           <v-divider />
           <v-card-text>
             <v-row class="justify-center">
@@ -82,23 +95,16 @@ export default {
                 this.$store.dispatch("auth/login");
                 this.dialog = false;
                 this.$emit("RefreshUser");
-                this.$toasted.info("Bienvenue ", {
-                  theme: "bubble",
-                  position: "top-center",
-                  duration: 5000,
-                  keepOnHover: true,
-                });
-                
                 this.$router.go()
               }
             })
             .catch(() => {
-              this.$toasted.info(
-                "Le numéro de tel ou le mot de pass sont eronné ",
+              this.$toasted.error(this.$t('credentials')
+               ,
                 {
                   theme: "bubble",
                   position: "top-center",
-                  duration: 5000,
+                  duration: 3000,
                   block: true,
                   keepOnHover: true,
                 }

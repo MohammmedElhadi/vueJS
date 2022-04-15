@@ -391,9 +391,9 @@ export default {
         HTTP.put("api/user/update/"+this.$store.state.auth.user.id ,  this.user)
           .then((response) => {
             if (response.status == 200) {
-              this.$toasted.info("Updated", {
+              this.$toasted.info(this.$t("updated"), {
                 theme: "bubble",
-                position: "top-center",
+                position: "bottom-center",
                 duration: 5000,
                 keepOnHover: true,
               });

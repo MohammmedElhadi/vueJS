@@ -1,17 +1,18 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="demande_dialog" max-width="90%">
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn small fab v-bind="attrs" right v-on="on" color="primary">
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
-      </template>
+    <v-dialog v-model="demande_dialog"
+    fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+      scrollable 
+    max-width="90%" 
+    persistent>
       <v-card>
         <v-form ref="form" class="mx-2" lazy-validation>
           <v-card-title>
             <span class="text-h5">{{ $t("new_demand") }} </span>
             <v-spacer />
-            <v-btn icon dark @click="demande_dialog = false">
+            <v-btn icon dark @click="$emit('closeDemandeDiaog')">
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
@@ -50,9 +51,15 @@
                           v-model="demand.type"
                           @change="getMarques()"
                         >
-                        </v-autocomplete> 
+                        </v-autocomplete>
                       </v-col>
-                        <v-col cols="12" xl="10" lg="10" md="10" v-show="is_vehicule">
+                      <v-col
+                        cols="12"
+                        xl="10"
+                        lg="10"
+                        md="10"
+                        v-show="is_vehicule"
+                      >
                         <v-autocomplete
                           :items="continents"
                           clearable
@@ -62,8 +69,14 @@
                           v-model="demand.continent"
                         >
                         </v-autocomplete>
-                        </v-col>
-                      <v-col cols="12" xl="10" lg="10" md="10" v-show="is_automobile">
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        xl="10"
+                        lg="10"
+                        md="10"
+                        v-show="is_automobile"
+                      >
                         <!-- marques -->
                         <v-autocomplete
                           multiple
@@ -99,13 +112,19 @@
                               <v-list-item-content>
                                 <v-list-item-title
                                   v-html="getName2(data.item)"
-                                ></v-list-item-title>   
+                                ></v-list-item-title>
                               </v-list-item-content>
                             </template>
                           </template>
                         </v-autocomplete>
                       </v-col>
-                      <v-col cols="12" xl="10" lg="10" md="10" v-show="is_automobile">
+                      <v-col
+                        cols="12"
+                        xl="10"
+                        lg="10"
+                        md="10"
+                        v-show="is_automobile"
+                      >
                         <!-- modeles -->
                         <v-autocomplete
                           :items="modeles"
@@ -269,7 +288,6 @@
                           :item-text="getName()"
                           item-value="id"
                           :label="$t('etat_demand')"
-                          
                           prepend-icon="mdi-circle"
                           v-model="demand.etat"
                         >
@@ -318,6 +336,7 @@
 import { HTTP } from "../http-constants";
 
 export default {
+  props:['demande_dialog'],
   data: () => ({
     is_automobile: false,
     is_vehicule: false,
@@ -327,7 +346,7 @@ export default {
     etatRules: [(v) => !!v || "required"],
     noteRules: [(v) => v.length <= 500 || ""],
     e1: 1,
-    demande_dialog: false,
+    // demande_dialog: false,
     demand: {
       type: "",
       marques: [],
@@ -477,9 +496,10 @@ export default {
                 this.demande_dialog = false;
                 this.$toasted.success("Demande créée avec succés!", {
                   theme: "bubble",
-                  position: "top-center",
+                  position: "bottom-center",
                   duration: 5000,
                 });
+                this.$emit('closeDemandeDiaog')
                 if (this.$router.name == "demande") {
                   this.$router.replace({
                     name: "demande",
@@ -492,6 +512,18 @@ export default {
                   });
                 }
                 this.$emit("refreshDemande");
+                // this.demand = {
+                //                 type: "",
+                //                 marques: [],
+                //                 modeles: [],
+                //                 categories: [],
+                //                 subcategories: [],
+                //                 subsubcategories: [],
+                //                 continent: "",
+                //                 etat: "",
+                //                 note: "",
+                //                 wilaya: "",
+                //               }
               }
             })
             .catch((error) => {
@@ -507,9 +539,9 @@ export default {
           }
         }
       } else {
-        this.$toasted.error("Vous devez s'inscrire ou se connecter", {
+        this.$toasted.error(this.$t('connect'), {
           theme: "bubble",
-          position: "top-center",
+          position: "bottom-center",
           duration: 3000,
         });
       }

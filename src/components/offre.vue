@@ -7,17 +7,19 @@
             <v-autocomplete
               dense
               :items="wilayas"
-               :item-text="$i18n.locale == 'fr' ? 'name' 
-                                       :'arabic_name'"
+              :item-text="$i18n.locale == 'fr' ? 'name' : 'arabic_name'"
               item-value="id"
               :label="$t('wilaya')"
               prepend-icon="mdi-google-maps"
               :rules="wilayaRules"
               v-model="offer.wilaya_id"
             >
-              <template v-slot:item="slotProps"
-                > {{ $i18n.locale == 'fr' ? slotProps.item.code + " " +  slotProps.item.name 
-                                       : slotProps.item.code + " " + slotProps.item.arabic_name}}
+              <template v-slot:item="slotProps">
+                {{
+                  $i18n.locale == "fr"
+                    ? slotProps.item.code + " " + slotProps.item.name
+                    : slotProps.item.code + " " + slotProps.item.arabic_name
+                }}
               </template>
             </v-autocomplete>
           </v-col>
@@ -60,9 +62,17 @@
             @filePondItemUploaded="demandImageUploaded($event)"
             @filePondItemDeleted="demandImageDeleted($event)"
           />
+          <v-col v-show="has_offer" md="8" lg="6" xl="6" cols="12">
+            <v-carousel height="300" v-if="offer.images.length > 0">
+              <v-carousel-item
+                v-for="(image, i) in offer.images"
+                :key="i"
+                :src="image.imageURL"
+              ></v-carousel-item>
+            </v-carousel>
+          </v-col>
         </v-col>
         <v-btn
-
           dense
           fa-flip-horizontal
           rounded
@@ -90,16 +100,16 @@
 
           <v-card>
             <v-card-title dark class="text-h7 red darken-3 justify-center">
-               {{$t('are_you_sur')}}
+              {{ $t("are_you_sur") }}
             </v-card-title>
 
-            <v-card-text> {{$t('this_is_not_reversible')}}</v-card-text>
+            <v-card-text> {{ $t("this_is_not_reversible") }}</v-card-text>
             <v-divider></v-divider>
 
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="red darken-2" text @click="retirerOffer">
-                {{$t('yes_delete')}}
+                {{ $t("yes_delete") }}
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -113,9 +123,9 @@ import { HTTP } from "../http-constants";
 export default {
   props: ["demande_id", "user_id"],
   data: () => ({
-    wilayaRules: [(v) => !!v || "wilaya is required"],
-    etatRules: [(v) => !!v || "l'état is required"],
-    prixRules: [(v) => !!v || "prix is required"],
+    wilayaRules: [(v) => !!v || "required"],
+    etatRules: [(v) => !!v || "required"],
+    prixRules: [(v) => !!v || "required"],
 
     disabled: false,
     delete_dialog: false,
@@ -143,10 +153,9 @@ export default {
     },
   },
   methods: {
-      getName(){
-      if(this.$i18n.locale == 'fr')
-        return "nom_fr";
-      else return  "nom_ar";
+    getName() {
+      if (this.$i18n.locale == "fr") return "nom_fr";
+      else return "nom_ar";
     },
 
     //Filepond Image
@@ -170,7 +179,7 @@ export default {
             this.offer.etat_id = offer.etat_id;
             this.offer.note = offer.note;
             // console.log(response.data.image)
-            this.offer.url = response.data.image;
+            this.offer.images = response.data.images;
             this.disabled = true;
             this.has_offer = true;
           }
@@ -195,31 +204,37 @@ export default {
           HTTP.post("api/demande/" + this.demande_id + "/offer", formData)
             .then((response) => {
               if (response.status == 200) {
-                console.log(response.data.id);
-                this.offer.id = response.data.id;
+                let offer = response.data.reponse;
+                this.offer.id = offer.id;
+                this.offer.prix_offert = offer.prix_offert;
+                this.offer.wilaya_id = offer.wilaya_id;
+                this.offer.etat_id = offer.etat_id;
+                this.offer.note = offer.note;
+                this.offer.images = response.data.images;
+                this.disabled = true;
+                this.has_offer = true;
                 this.disabled = true;
                 this.$emit("offer_responded");
                 this.$toasted.success(this.$t("offer_created_success"), {
                   theme: "bubble",
-                  position: "top-center",
+                  position: "bottom-center",
                   duration: 3000,
-                  keepOnHover: true,
                 });
+                this.has_offer = true;
               }
             })
             .catch(() => {
-                  this.$toasted.error(this.$t("reconnect_plz"), {
-                  theme: "bubble",
-                  position: "top-center",
-                  duration: 3000,
-                });
+              this.$toasted.error(this.$t("error"), {
+                theme: "bubble",
+                position: "bottom-center",
+                duration: 3000,
+              });
             });
         } else {
-          this.$toasted.error("Vous devez s'inscrire ou se connecter", {
+          this.$toasted.error(this.$t("connect"), {
             theme: "bubble",
-            position: "top-center",
+            position: "bottom-center",
             duration: 3000,
-            keepOnHover: true,
           });
         }
       }
@@ -229,7 +244,6 @@ export default {
         .then((response) => {
           if (response.status == 200) {
             this.delete_dialog = false;
-            console.log(response.data);
             this.offer = {
               id: "",
               wilaya_id: "", //this.$store.state.auth.user.wilaya_id,
@@ -242,9 +256,9 @@ export default {
             this.disabled = false;
             this.has_offer = false;
             this.$emit("remove_offer");
-            this.$toasted.error("Offre retiré avec succés", {
-              theme: ["bubble", "outlined"],
-              position: "top-center",
+            this.$toasted.success(this.$t("offer_deleted_success"), {
+              theme: "bubble",
+              position: "bottom-center",
               duration: 3000,
             });
           }

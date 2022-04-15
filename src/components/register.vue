@@ -1,6 +1,15 @@
 <template>
   <div>
-    <v-dialog v-model="dialog" eager max-width="100%">
+    <v-dialog
+      v-model="dialog"
+      persistent
+      eager
+      max-width="100%"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+      scrollable
+    >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
           class="my-2"
@@ -57,7 +66,7 @@
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12">
-                        <!-- notes -->
+                        <!-- password -->
                         <v-text-field
                           type="password"
                           :label="$t('password') + ' *'"
@@ -68,7 +77,6 @@
                           required
                         ></v-text-field>
                       </v-col>
-
                       <v-col cols="12">
                         <!-- phone -->
                         <v-text-field
@@ -353,10 +361,12 @@ export default {
   data: () => ({
     nameRules: [(v) => !!v || "required"],
     phoneRules: [
-      (v) => !!v || "Phone is required",
-      (v) => /^\d+$/.test(v) || "Phone must be a number",
+      (v) => !!v || "equired",
+      (v) => v.length===10 || "<10",
+      (v) => /^\d+$/.test(v) || "number",
     ],
     passRules: [(v) => !!v || "required"],
+    // passRules2: [(v) => u===v || "required"],
     typeRules: [(v) => v.length != 0 || "required"],
     wilayaRules: [(v) => !!v || "required"],
 
@@ -375,6 +385,7 @@ export default {
       wilaya: "",
       name: "",
       password: "",
+      password2: "",
       phone: "",
     },
     is_vehicule: false,
@@ -389,6 +400,11 @@ export default {
     wilayas: [],
     etats: [],
   }),
+  computed : {
+      passRules2(){
+       return [(v) => v!= this.password2 || "required"]
+      }
+  },
   methods: {
     getName2(item) {
       if (this.$i18n.locale == "fr") return item.nom_fr;
@@ -487,13 +503,13 @@ export default {
             }
           })
           .catch(() => {
-              this.e1 = 1;
-              this.$toasted.error("Numéro de telephone est déja utilisé", {
-                theme: "bubble",
-                position: "top-center",
-                duration: 5000,
-                keepOnHover: true,
-              });
+            this.e1 = 1;
+            this.$toasted.error("Numéro de telephone est déja utilisé", {
+              theme: "bubble",
+              position: "top-center",
+              duration: 5000,
+              keepOnHover: true,
+            });
           });
       } else {
         if (this.user.types.length == 0) {
@@ -512,6 +528,7 @@ export default {
 
     // console.log(this.types)
   },
+
 };
 </script>
 <style>

@@ -10,7 +10,8 @@ export default {
     disconnect   : 'Se déconnecter',
     notifications : 'Notifications',
     dark_mode     : 'Mode Nuit',
-
+    connect       : "Vous devez s'inscrire ou se connecter",
+    credentials       : "Le numéro de tel ou le mot de pass sont eronné",
     //Offer
     wilaya       : 'Wilaya',
     etat          :'Etat',
@@ -30,18 +31,25 @@ export default {
     offer_demand        : 'Nouveau offre sur votre demande N° ',
     close                 : 'Fermer',
     show_offers     : 'Afficher les Offres',
+    rows_per_page     : 'ligne par page',
     offer_created_success : 'Votre offre a été enregistré',
+    offer_deleted_success : "Offre retiré avec succés",
     delete_offer             : "Supprimer l'offre"  ,
     detail_offer             : "Détail de l'offre"  ,
     see_offer            : "Afficher votre offre"  ,
+    Search_page             : "Page de recherche"  ,
+    error             : "Essayer un peu plus tard SVP"  ,
+    new_offer         : 'Nouvelle offre',
+    some_one_responded_to_your_demand         : 'Vous avez reçus une reponse sur votre demande',
+    since         : 'Depuis',
     //demande
     new_demand      : 'Nouvelle demande',
     Marque_modele      :  'Marque et modele de véhicule',
     categories        :  'Catégorisation',
     additionnel           :  'informations additionnelles',
     type           :  'Type de la véhicule',
-    marque             :  'Marques de la véhicule',
-    modele              :  'Modeles de la véhicule',
+    marque             :  'Marques de la véhicule(Léger)',
+    modele              :  'Modeles de la véhicule(Léger)',
     photos              :  'Photos de la pièce',
     delete_demande             : 'Supprimer la demande'  ,
     disactivate             :''  ,
@@ -50,6 +58,7 @@ export default {
     yes_delete             :'Oui, Supprimer'  ,
     save             :'Sauvgarder'  ,
     origine           : 'La source' ,
+    demande_added           : "Demande a été ajouté",
     //
     category                 :   'Categories de la pièce',
     subcategory                 :   'Sous categories',
@@ -60,16 +69,23 @@ export default {
     previous        :'Precident',
     next        :'Suivant',
     make_demand        :'Demander',
+    type_filter        : 'Type de véhicule',
     //signup
     contact_info           :'Information de contact',
     category_info           :'Information sur les catégories',
     marque_info           :' information sur les marques et les modèles',
     name           :'Nom et prénom ',
+    
+    confirm_password: 'Confirler le mot de passe',
     types           :'Types de véhicules',
     modeles           :'Modèles',
     marques           :'Marques',
-    profile           : 'Profile'
-
+    profile           : 'Profile',
+    filter           : 'Filter',
+    offer_added           : 'un offre a été ajouté sur la demande ',
+    updated       : 'Changement enregistrés',
+  
+  
   },
 
 
@@ -86,7 +102,11 @@ export default {
     disconnect   : 'الخروج',
     notifications : 'الإشعارات',
     dark_mode     : 'الوضع الليلي',
+    connect       : "سجل دخولك أو سجل معنا أولا",
+    credentials       : "المعلومات التي أدخلتها خاطئة، تأكد منها من فضلك",
+
     // Offer
+    new_offer     : 'عرض جديد',
     wilaya       : 'الولاية',
     etat         : 'الحالة',
     prix          : 'السعر',
@@ -96,9 +116,10 @@ export default {
     responde           : 'أرسل عرضك',
     remove_offer            : 'اسحب عرضك',
     offer_created_success : 'قد تم إرسال عرضك',
+    offer_deleted_success : "تم حذف العرض ",
     delete_offer            : "حذف العرض"  ,
     see_offer            : "شاهد عرضك"  ,
-
+    error        : 'أعد المحاولة بعد قليل',
     propose      : 'قدم عرضا',
     login      : 'تسجيل الدخول',
     signin     : 'سجل معنا',
@@ -108,7 +129,12 @@ export default {
     offer_demand         :   'عرض جديد على الطلب',    
     close                :'إغلاق',
     show_offers     : 'جميع العروض',
+    rows_per_page     : 'صف في الصفحة',
     detail_offer             : "تفاصيل العرض"  ,
+    Search_page             : "صفحة البحث"  ,
+    offer_added           : 'أرسل أحدهم عرضا عل الطلب ',
+    some_one_responded_to_your_demand         : 'عرض أحدهم قطعة لطلبك ',
+
 
     //demande
     new_demand      : 'طلب جديد',
@@ -119,12 +145,12 @@ export default {
     marque             :  'العلامة',
     modele              :  'الموديل',
     photos              :  'صور',
-    category            :'صنف القطعة المطلوبة',
+    category            :'صنف القطعة',
     subcategory                 :   'الصنف الأدنى',
     subsubcategory                 :   'الصنف الأدنى',
     note                 :   'ملاحظات',
     wilaya_demand        :'ولاية الطلب',
-    etat_demand        :'حالة القطعة المطلوبة',
+    etat_demand        :'حالة القطعة',
     previous        :'السابق',
     next        :'التالي',
     make_demand        :'َضع طلبك',
@@ -135,16 +161,21 @@ export default {
     yes_delete             :'نعم، أحذف'  ,
     save             :'حفظ'  ,
     origine           : 'مصدر القطعة' ,
+    demande_added           : "تمت إضافة طلب جديد",
+    type_filter        : 'نوع المركبة' ,
     //
     contact_info           :'حول الإتصال',
     category_info           :' حول الأصناف ',
     marque_info           :'حول العلامات والموديلات',
     name           :'الإسم',
+    confirm_password: 'تأكيد كلمة المرور',
     types           :'أنواع المركبات',
     modeles           :'الموديلات',
     marques           :'العلامات',
-    profile           : 'الملف الشخصي'
-
+    profile           : 'الملف الشخصي',
+    filter           : 'بحث',
+    since         : 'منذ',
+    updated       : 'تم حفظ التغييرات ',
   
 
   }

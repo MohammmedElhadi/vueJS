@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div v-if="demandes.length == 0">
+          <h1>No demandes yet</h1>
+    </div>
     <div class="my-5 px-1" v-for="demande in demandes" :key="'dem'+demande.id">
       <demande :demande="demande" :detail="detail"></demande>
     </div>
@@ -15,6 +18,7 @@ export default {
     demandes: [],
   }),
   methods: {
+   
     async getDemandes() {
      let repsponse =  await HTTP.get("api/demande/my_demandes")
      this.demandes = repsponse.data;
