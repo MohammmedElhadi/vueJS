@@ -1,8 +1,17 @@
 <template>
   <div>
-    <div v-if="demandes.length == 0">
-          <h1>No demandes yet</h1>
-    </div>
+     <v-row class="justify-center my-3">
+      <v-progress-circular
+        :size="70"
+        :width="7"
+        v-if="loading"
+        color="red"
+        indeterminate
+      ></v-progress-circular>
+      <div  v-if="!loading && demandes.length == 0">
+        {{$t('no_result_found')}}
+      </div>
+    </v-row>
     <div class="my-5 px-1"  v-for="demande in demandes" :key="'dem'+demande.id">
       <demande :demande="demande" :detail="detail"></demande>
     </div>
@@ -15,13 +24,24 @@ export default {
   components: { Demande },
   data: () => ({
     detail : false,
+     loading : true,
     demandes: [],
   }),
   methods: {
-    async getDemandes() {
-     let repsponse =  await HTTP.get("api/demande/demandesaime")
-     this.demandes = repsponse.data;
-       
+     getDemandes() {
+      HTTP.get("api/demande/demandesaime")
+        .then((response) => {
+          this.demandes = response.data;
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+          this.$toasted.error(this.$t("error"), {
+            theme: "bubble",
+            position: "bottom-center",
+            duration: 3000,
+          });
+        });
     },
   },
   computed: {

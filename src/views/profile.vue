@@ -316,7 +316,6 @@ export default {
         this.getModeles();
         this.getSubCategories();
         this.getSubSubCategories();
-        console.log(this.user);
       });
     },
     init() {
@@ -358,8 +357,8 @@ export default {
         .then((repsponse) => {
           this.modeles = this.modeles.concat(repsponse.data);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+         
         });
     },
     async getCategories() {
@@ -371,8 +370,8 @@ export default {
         .then((repsponse) => {
           this.subcategories = this.subcategories.concat(repsponse.data);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+          
         });
     },
     getSubSubCategories() {
@@ -380,13 +379,12 @@ export default {
         .then((repsponse) => {
           this.subsubcategories = this.subsubcategories.concat(repsponse.data);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+         
         });
     },
 
     update() {
-      console.log("api/user/update/"+this.$store.state.auth.user.id)
       if (this.$refs.form.validate()) {
         HTTP.put("api/user/update/"+this.$store.state.auth.user.id ,  this.user)
           .then((response) => {
@@ -399,8 +397,8 @@ export default {
               });
             }
           })
-          .catch((error) => {
-            console.log(error);
+          .catch(() => {
+           
           })
           .finally();
       }

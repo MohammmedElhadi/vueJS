@@ -234,8 +234,8 @@ export default {
         .then((repsponse) => {
           this.types = repsponse.data;
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+     
         });
     },
     },

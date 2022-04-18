@@ -44,8 +44,8 @@ export default {
                 .then((repsponse) => {
                     this.notifications = repsponse.data;
                 })
-                .catch((error) => {
-                    console.log(error);
+                .catch(() => {
+                
                 });
         },
     },

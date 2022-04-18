@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="my-5 px-1">
-      <v-row  dense class="justify-center">
+      <v-row dense class="justify-center">
         <!-- Types -->
         <v-col cols="6">
           <v-autocomplete
@@ -108,20 +108,26 @@
         </v-col>
       </v-row>
       <v-row dense class="justify-center">
-        <v-btn color="success"  @click="filterDemandes()">
+        <v-btn color="success" @click="filterDemandes()">
           {{ $t("filter") }}
           <v-icon>mdi-filter</v-icon>
         </v-btn>
       </v-row>
     </div>
-    <div
-      class="my-5 px-1"
-     v-for="(demande, index) in demandes" :key="index"
-    >
+    <v-row class="justify-center my-3">
+      <v-progress-circular
+        :size="70"
+        :width="7"
+        v-if="loading"
+        color="red"
+        indeterminate
+      ></v-progress-circular>
+      <div  v-if="!loading && demandes.length == 0">
+        {{$t('no_result_found')}}
+      </div>
+    </v-row>
+    <div class="my-5 px-1" v-for="(demande, index) in demandes" :key="index">
       <demande :demande="demande" :detail="detail"></demande>
-    </div>
-    <div class="justify-center" v-if="demandes.length == 0">
-      NO result found
     </div>
   </div>
 </template>
@@ -131,6 +137,7 @@ import { HTTP } from "../http-constants";
 export default {
   components: { Demande },
   data: () => ({
+     loading : true,
     is_automobile: false,
     is_vehicule: false,
     detail: false,
@@ -139,7 +146,7 @@ export default {
     marques: [],
     continents: [],
     search: {
-      type_filters:[],
+      type_filters: [],
       marque_filters: [],
       continent_filters: [],
     },
@@ -163,8 +170,8 @@ export default {
         .then((repsponse) => {
           this.types = repsponse.data;
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+
         });
     },
     getMarques() {
@@ -178,8 +185,8 @@ export default {
             .then((repsponse) => {
               this.marques = repsponse.data;
             })
-            .catch((error) => {
-              console.log(error);
+            .catch(() => {
+              
             });
         } else {
           this.is_vehicule = true;
@@ -195,43 +202,62 @@ export default {
         .then((repsponse) => {
           this.continents = repsponse.data;
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+          
         });
     },
     getDemandes() {
       this.demandes = [];
+      this.loading = true
       HTTP.get(
         "api/" +
           this.$route.params.filter +
           "/" +
           this.$route.params.id +
           "/demandes"
-      ).then((response) => {
-        this.demandes = response.data;
-      });
+      )
+        .then((response) => {
+          this.demandes = response.data;
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+          this.$toasted.error(this.$t("Préciser les critères de recherche"), {
+            theme: "bubble",
+            position: "bottom-center",
+            duration: 3000,
+          });
+        });
     },
     filterDemandes() {
       this.demandes = [];
-      console.log( JSON.stringify(this.search.type_filters))
+      this.loading = true
       let url =
-        "api/filter/?"+
+        "api/filter/?" +
         "marques=" +
         JSON.stringify(this.search.marque_filters) +
         "&types=" +
-         JSON.stringify(this.search.type_filters)+
+        JSON.stringify(this.search.type_filters) +
         "&continents=" +
         JSON.stringify(this.search.continent_filters);
       HTTP.get(url).then((response) => {
         this.demandes = response.data;
-      });
+        this.loading = false
+      }).catch(() => {
+          this.loading = false
+          this.$toasted.error(this.$t("error"), {
+            theme: "bubble",
+            position: "bottom-center",
+            duration: 3000,
+          });
+        });
     },
     clearAll() {
-      this.is_automobile            = false;
-      this.is_vehicule              = false;
-      this.search.type_filters      = [];
+      this.is_automobile = false;
+      this.is_vehicule = false;
+      this.search.type_filters = [];
       this.search.continent_filters = [];
-      this.search.marque_filters    = [];
+      this.search.marque_filters = [];
     },
   },
   computed: {
@@ -247,9 +273,11 @@ export default {
       () => this.$route.params,
       (toParams) => {
         this.demandes = [];
+        this.loading = true
         HTTP.get(
           "api/" + toParams.filter + "/" + toParams.id + "/demandes"
         ).then((response) => {
+          this.loading = false
           this.demandes = response.data;
         });
       }

@@ -321,12 +321,10 @@ export default {
     ToggleSaved() {
       HTTP.get("api/demande/" + this.demande.demande.id + "/ToggleSaved")
         .then((response) => {
-          console.log(response.data);
           this.demande.is_saved = response.data.is_saved;
           this.demande.likes = response.data.likes;
         })
         .catch(() => {
-          console.log("error");
         });
     },
     markAsResponded() {

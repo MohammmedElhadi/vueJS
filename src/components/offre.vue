@@ -62,7 +62,8 @@
             @filePondItemUploaded="demandImageUploaded($event)"
             @filePondItemDeleted="demandImageDeleted($event)"
           />
-          <v-col v-show="has_offer" md="8" lg="6" xl="6" cols="12">
+          <v-row justify="center">
+            <v-col v-show="has_offer" md="8" lg="6" xl="6" cols="12">
             <v-carousel height="300" v-if="offer.images.length > 0">
               <v-carousel-item
                 v-for="(image, i) in offer.images"
@@ -71,6 +72,7 @@
               ></v-carousel-item>
             </v-carousel>
           </v-col>
+          </v-row>
         </v-col>
         <v-btn
           dense
@@ -163,7 +165,6 @@ export default {
       this.offer.images.push(e);
     },
     demandImageDeleted(e) {
-      console.log(e);
       var index = this.offer.images.indexOf(e);
       this.offer.images.splice(index, 1);
     },
@@ -178,7 +179,6 @@ export default {
             this.offer.wilaya_id = offer.wilaya_id;
             this.offer.etat_id = offer.etat_id;
             this.offer.note = offer.note;
-            // console.log(response.data.image)
             this.offer.images = response.data.images;
             this.disabled = true;
             this.has_offer = true;
@@ -201,10 +201,12 @@ export default {
           formData.append("note", this.offer.note);
           formData.append("images", this.offer.images);
           // debugger
+          let offer;
           HTTP.post("api/demande/" + this.demande_id + "/offer", formData)
             .then((response) => {
-              if (response.status == 200) {
-                let offer = response.data.reponse;
+              console.log("out ")
+              if (response.status === 200) {
+                offer = response.data.offer;
                 this.offer.id = offer.id;
                 this.offer.prix_offert = offer.prix_offert;
                 this.offer.wilaya_id = offer.wilaya_id;
@@ -223,13 +225,13 @@ export default {
                 this.has_offer = true;
               }
             })
-            .catch(() => {
-              this.$toasted.error(this.$t("error"), {
-                theme: "bubble",
-                position: "bottom-center",
-                duration: 3000,
-              });
-            });
+            // .catch(() => {
+            //   this.$toasted.error(this.$t("error"), {
+            //     theme: "bubble",
+            //     position: "bottom-center",
+            //     duration: 3000,
+            //   });
+            // });
         } else {
           this.$toasted.error(this.$t("connect"), {
             theme: "bubble",

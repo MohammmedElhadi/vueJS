@@ -36,6 +36,33 @@
                     {{ $t("additionnel") }}
                   </v-stepper-step>
                 </v-stepper-header>
+                  <v-card-actions>
+              <v-btn
+                color="blue darken-1"
+                class="mx-10"
+                v-show="e1 > 1"
+                @click="e1 = e1 - 1"
+              >
+                {{ $t("previous") }}
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="warning darken-1"
+                class="mx-10"
+                v-show="e1 < 3"
+                @click="e1 = e1 + 1"
+              >
+                {{ $t("next") }}
+              </v-btn>
+              <v-btn
+                color="success"
+                class="mx-10"
+                v-show="e1 == 3"
+                @click.prevent="submitDemande()"
+              >
+                {{ $t("make_demand") }}
+              </v-btn>
+            </v-card-actions>
                 <v-stepper-items>
                   <v-stepper-content step="1">
                     <v-row dense class="justify-center">
@@ -128,6 +155,7 @@
                         <!-- modeles -->
                         <v-autocomplete
                           :items="modeles"
+                          :messages="$t('optionnel')"
                           :item-text="getName()"
                           item-value="id"
                           :label="$t('modele')"
@@ -190,6 +218,7 @@
                         <!-- subcategories -->
                         <v-autocomplete
                           :items="subcategories"
+                          :messages="$t('optionnel')"
                           :item-text="getName()"
                           item-value="id"
                           :label="$t('subcategory')"
@@ -216,6 +245,7 @@
                         <!-- subsubcategories -->
                         <v-autocomplete
                           :items="subsubcategories"
+                          :messages="$t('optionnel')"
                           :item-text="getName()"
                           item-value="id"
                           :label="$t('subsubcategory')"
@@ -299,33 +329,7 @@
               </v-container>
             </v-card-text>
 
-            <v-card-actions>
-              <v-btn
-                color="blue darken-1"
-                class="mx-10"
-                v-show="e1 > 1"
-                @click="e1 = e1 - 1"
-              >
-                {{ $t("previous") }}
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="warning darken-1"
-                class="mx-10"
-                v-show="e1 < 3"
-                @click="e1 = e1 + 1"
-              >
-                {{ $t("next") }}
-              </v-btn>
-              <v-btn
-                color="success"
-                class="mx-10"
-                v-show="e1 == 3"
-                @click.prevent="submitDemande()"
-              >
-                {{ $t("make_demand") }}
-              </v-btn>
-            </v-card-actions>
+          
           </v-stepper>
         </v-form>
       </v-card>
@@ -383,7 +387,6 @@ export default {
       this.images.push(e);
     },
     demandImageDeleted(e) {
-      console.log(e);
       var index = this.images.indexOf(e);
       this.images.splice(index, 1);
     },
@@ -397,8 +400,7 @@ export default {
         .then((repsponse) => {
           this.types = repsponse.data;
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
         });
     },
     getContinents() {
@@ -406,8 +408,7 @@ export default {
         .then((repsponse) => {
           this.continents = repsponse.data;
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
         });
     },
     getMarques() {
@@ -420,8 +421,7 @@ export default {
           .then((repsponse) => {
             this.marques = repsponse.data;
           })
-          .catch((error) => {
-            console.log(error);
+          .catch(() => {
           });
       } else {
         this.is_vehicule = true;
@@ -437,8 +437,8 @@ export default {
         .then((repsponse) => {
           this.modeles = this.modeles.concat(repsponse.data);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+   
         });
     },
     //step 2
@@ -447,8 +447,8 @@ export default {
         .then((repsponse) => {
           this.categories = repsponse.data;
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+
         });
     },
     getSubCategories() {
@@ -456,8 +456,8 @@ export default {
         .then((repsponse) => {
           this.subcategories = this.subcategories.concat(repsponse.data);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+
         });
     },
     getSubSubCategories() {
@@ -465,8 +465,8 @@ export default {
         .then((repsponse) => {
           this.subsubcategories = this.subsubcategories.concat(repsponse.data);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+
         });
     },
     // step 3
@@ -526,8 +526,8 @@ export default {
                 //               }
               }
             })
-            .catch((error) => {
-              console.log(error);
+            .catch(() => {
+
             });
         } else {
           if (!this.demand.type) {
@@ -563,3 +563,4 @@ export default {
   },
 };
 </script>
+

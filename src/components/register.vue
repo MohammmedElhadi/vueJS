@@ -1,30 +1,22 @@
 <template>
-  <div>
+  <v-row justify="center">
     <v-dialog
       v-model="dialog"
       persistent
       eager
-      max-width="100%"
+      max-width="90%"
       fullscreen
       hide-overlay
       transition="dialog-bottom-transition"
       scrollable
     >
       <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          class="my-2"
-          block
-          v-bind="attrs"
-          right
-          v-on="on"
-          outlined
-          color="info"
-        >
+        <v-btn class="my-2" block v-bind="attrs" right v-on="on" color="info">
           {{ $t("signin") }}
         </v-btn>
       </template>
-      <v-form ref="form" class="mx-2" lazy-validation>
-        <v-card class="pa-0">
+      <v-card>
+        <v-form ref="form" class="mx-2" lazy-validation>
           <v-card-title>
             <span class="text-h5">{{ $t("signin") }}</span>
             <v-spacer />
@@ -52,9 +44,51 @@
                     {{ $t("marque_info") }}
                   </v-stepper-step>
                 </v-stepper-header>
+                   <v-card-actions>
+              <v-btn
+                color="blue darken-1"
+                class="mx-10"
+                v-show="e1 > 1"
+                @click="e1 = e1 - 1"
+              >
+                {{ $t("previous") }}
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="blue darken-1"
+                class="mx-10"
+                v-show="e1 < 3"
+                @click="e1 = e1 + 1"
+              >
+                {{ $t("next") }}
+              </v-btn>
+              <v-btn
+                color="success"
+                class="mx-10"
+                v-show="e1 == 3"
+                @click.prevent="register()"
+              >
+                {{ $t("signin") }}
+              </v-btn>
+            </v-card-actions>
                 <v-stepper-items>
                   <v-stepper-content step="1">
                     <v-row dense>
+                      
+                      <v-col cols="12">
+                        <!-- profession -->
+                      <v-autocomplete
+                          ref="professions"
+                          prepend-icon="mdi-cog"
+                          :items="professions"
+                          :item-text="getName()"
+                          item-value="id"
+                          :label="$t('profession') + ' *'"
+                          v-model="user.professions"
+                          close
+                        >
+                        </v-autocomplete>
+                      </v-col>
                       <v-col cols="12">
                         <!-- nom -->
                         <v-text-field
@@ -65,7 +99,7 @@
                           v-model="user.name"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12">
+                      <v-col md="6" lg="6" cols="12">
                         <!-- password -->
                         <v-text-field
                           type="password"
@@ -74,6 +108,22 @@
                           hide-details="auto"
                           :rules="passRules"
                           v-model="user.password"
+                          @keyup="checkPassword"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col md="6" lg="6" cols="12">
+                        <!-- password 2 -->
+                        <v-text-field
+                          type="password"
+                          :label="$t('confirm_password') + ' *'"
+                          prepend-icon="mdi-key"
+                          :messages="
+                            checkPassword() ? '' : $t('check_password')
+                          "
+                          hide-details="auto"
+                          :rules="passRules"
+                          v-model="user.password2"
+                          @keyup="checkPassword"
                           required
                         ></v-text-field>
                       </v-col>
@@ -99,6 +149,7 @@
                           required
                           :rules="wilayaRules"
                           v-model="user.wilaya"
+                          @click="wilayas = $store.state.wilayas"
                         >
                           <template v-slot:item="slotProps"
                             >{{ slotProps.item.code }}-{{ slotProps.item.name }}
@@ -142,6 +193,7 @@
                         <!-- Continent -->
                         <v-autocomplete
                           ref="types"
+                          :messages="$t('optionnel')"
                           :items="continents"
                           :item-text="getName()"
                           item-value="id"
@@ -211,6 +263,7 @@
                         <!-- modeles -->
                         <v-autocomplete
                           :items="modeles"
+                          :messages="$t('optionnel')"
                           :item-text="getName()"
                           item-value="id"
                           :label="$t('modeles')"
@@ -266,6 +319,7 @@
                         <!-- subcategories -->
                         <v-autocomplete
                           :items="subcategories"
+                          :messages="$t('optionnel')"
                           :item-text="getName()"
                           item-value="id"
                           multiple
@@ -292,6 +346,7 @@
                         <!-- subsubcategories -->
                         <v-autocomplete
                           :items="subsubcategories"
+                          :messages="$t('optionnel')"
                           :item-text="getName()"
                           item-value="id"
                           multiple
@@ -319,38 +374,12 @@
               </v-container>
             </v-card-text>
 
-            <v-card-actions>
-              <v-btn
-                color="blue darken-1"
-                class="mx-10"
-                v-show="e1 > 1"
-                @click="e1 = e1 - 1"
-              >
-                {{ $t("previous") }}
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="blue darken-1"
-                class="mx-10"
-                v-show="e1 < 3"
-                @click="e1 = e1 + 1"
-              >
-                {{ $t("next") }}
-              </v-btn>
-              <v-btn
-                color="success"
-                class="mx-10"
-                v-show="e1 == 3"
-                @click.prevent="register()"
-              >
-                {{ $t("signin") }}
-              </v-btn>
-            </v-card-actions>
+         
           </v-stepper>
-        </v-card>
-      </v-form>
+        </v-form>
+      </v-card>
     </v-dialog>
-  </div>
+  </v-row>
 </template>
 
 <script>
@@ -361,12 +390,11 @@ export default {
   data: () => ({
     nameRules: [(v) => !!v || "required"],
     phoneRules: [
-      (v) => !!v || "equired",
-      (v) => v.length===10 || "<10",
+      (v) => !!v || "required",
+      (v) => v.length === 10 || "<10",
       (v) => /^\d+$/.test(v) || "number",
     ],
     passRules: [(v) => !!v || "required"],
-    // passRules2: [(v) => u===v || "required"],
     typeRules: [(v) => v.length != 0 || "required"],
     wilayaRules: [(v) => !!v || "required"],
 
@@ -374,6 +402,7 @@ export default {
     dialog: false,
     user: {
       types: [],
+      professions: [],
       continents: [],
       marques: [],
       modeles: [],
@@ -391,6 +420,7 @@ export default {
     is_vehicule: false,
     is_automobile: false,
     types: [],
+    professions: [],
     continents: [],
     marques: [],
     modeles: [],
@@ -400,12 +430,11 @@ export default {
     wilayas: [],
     etats: [],
   }),
-  computed : {
-      passRules2(){
-       return [(v) => v!= this.password2 || "required"]
-      }
-  },
+  computed: {},
   methods: {
+    checkPassword() {
+      return this.user.password === this.user.password2;
+    },
     getName2(item) {
       if (this.$i18n.locale == "fr") return item.nom_fr;
       else return item.nom_ar;
@@ -427,17 +456,28 @@ export default {
         }
       }
     },
-    async getTypes() {
-      let response = await HTTP.get("api/type");
-      this.types = response.data;
+     getTypes() {
+      HTTP.get("api/type").then((response) =>{
+        this.types = response.data;
+      });
+      
     },
-    async getContinents() {
-      let response = await HTTP.get("api/continent");
-      this.continents = response.data;
+     getProfessions() {
+    HTTP.get("api/profession").then((response) =>{
+       this.professions = response.data; 
+      });
+      
     },
-    async getMarques() {
-      let response = await HTTP.get("api/marque");
-      this.marques = response.data;
+     getContinents() {
+     HTTP.get("api/continent").then((response) =>{
+        this.continents = response.data;
+      });
+    },
+     getMarques() {
+     HTTP.get("api/marque").then((response) =>{
+         this.marques = response.data;
+      });
+    
     },
     //-----------------------------------
     getModeles() {
@@ -446,22 +486,24 @@ export default {
         .then((repsponse) => {
           this.modeles = this.modeles.concat(repsponse.data);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+         
         });
     },
     //-----------------------------------
-    async getCategories() {
-      let response = await HTTP.get("api/category");
-      this.categories = response.data;
+     getCategories() {
+      HTTP.get("api/category").then((response) =>{
+       this.categories = response.data;
+      });
+      
     },
     getSubCategories() {
       HTTP.post("api/category/subcategories", this.user.categories)
         .then((repsponse) => {
           this.subcategories = this.subcategories.concat(repsponse.data);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+         
         });
     },
     getSubSubCategories() {
@@ -469,13 +511,23 @@ export default {
         .then((repsponse) => {
           this.subsubcategories = this.subsubcategories.concat(repsponse.data);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+          
         });
     },
 
     register() {
-      if (this.$refs.form.validate()) {
+     if (!this.checkPassword()) {
+          this.e1 = 1;
+          this.$toasted.error(this.$t("check_password"), {
+            theme: "bubble",
+            position: "top-center",
+            duration: 5000,
+            keepOnHover: true,
+          });
+     }
+     else{
+          if (this.$refs.form.validate()) {
         HTTP.post("api/register", this.user)
           .then((response) => {
             if (response.status == 200) {
@@ -492,43 +544,50 @@ export default {
                       theme: "bubble",
                       position: "top-center",
                       duration: 5000,
-                      keepOnHover: true,
                     });
+                    this.$router.go();
                   })
-                  .catch((error) => {
-                    console.log(error);
+                  .catch(() => {
+               
                   })
                   .finally();
               });
             }
           })
-          .catch(() => {
-            this.e1 = 1;
-            this.$toasted.error("Numéro de telephone est déja utilisé", {
-              theme: "bubble",
-              position: "top-center",
-              duration: 5000,
-              keepOnHover: true,
-            });
-          });
+          .catch((error) => {
+             console.log(error.response.data);
+              this.e1 = 1;
+              let message = error.response.data.message;
+              this.$toasted.error(this.$t(message)
+               ,
+                {
+                  theme: "bubble",
+                  position: "top-center",
+                  duration: 3000,
+                  keepOnHover: true,
+                }
+              );
+            })
+
       } else {
         if (this.user.types.length == 0) {
           this.e1 = 2;
         } else this.e1 = 1;
       }
+     }
     },
+  },
+  created(){
+    this.wilayas = this.$store.state.wilayas;
   },
   mounted() {
     this.wilayas = this.$store.state.wilayas;
-
+    this.getProfessions();
     this.getTypes();
     this.getContinents();
     this.getMarques();
     this.getCategories();
-
-    // console.log(this.types)
   },
-
 };
 </script>
 <style>

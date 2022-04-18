@@ -11,7 +11,9 @@ export default {
     notifications : 'Notifications',
     dark_mode     : 'Mode Nuit',
     connect       : "Vous devez s'inscrire ou se connecter",
-    credentials       : "Le numéro de tel ou le mot de pass sont eronné",
+    credentials       : "Le mot de passe est eronné",
+    user_not_found       : "Ce numéro de télephone n'existe pas",
+    already_registred       : "le numéro de telephone est déja utilisé",
     //Offer
     wilaya       : 'Wilaya',
     etat          :'Etat',
@@ -59,6 +61,7 @@ export default {
     save             :'Sauvgarder'  ,
     origine           : 'La source' ,
     demande_added           : "Demande a été ajouté",
+    no_result_found           : "0 demande trouvée",
     //
     category                 :   'Categories de la pièce',
     subcategory                 :   'Sous categories',
@@ -76,7 +79,7 @@ export default {
     marque_info           :' information sur les marques et les modèles',
     name           :'Nom et prénom ',
     
-    confirm_password: 'Confirler le mot de passe',
+    confirm_password: 'Confirmer le mot de passe',
     types           :'Types de véhicules',
     modeles           :'Modèles',
     marques           :'Marques',
@@ -84,6 +87,10 @@ export default {
     filter           : 'Filter',
     offer_added           : 'un offre a été ajouté sur la demande ',
     updated       : 'Changement enregistrés',
+    put_images_here         : 'Ajouter des Photos',
+    optionnel         : 'optionnel',
+    check_password     : 'Vérifier le mot de passe',
+
   
   
   },
@@ -104,6 +111,8 @@ export default {
     dark_mode     : 'الوضع الليلي',
     connect       : "سجل دخولك أو سجل معنا أولا",
     credentials       : "المعلومات التي أدخلتها خاطئة، تأكد منها من فضلك",
+    user_not_found       : "ليس هناك حساب بهذا الرقم",
+    already_registred       : "هذا الرقم مسجل",
 
     // Offer
     new_offer     : 'عرض جديد',
@@ -134,6 +143,7 @@ export default {
     Search_page             : "صفحة البحث"  ,
     offer_added           : 'أرسل أحدهم عرضا عل الطلب ',
     some_one_responded_to_your_demand         : 'عرض أحدهم قطعة لطلبك ',
+    put_images_here         : 'أضف الصور من هنا',
 
 
     //demande
@@ -153,7 +163,7 @@ export default {
     etat_demand        :'حالة القطعة',
     previous        :'السابق',
     next        :'التالي',
-    make_demand        :'َضع طلبك',
+    make_demand        :'أرسل الطلب',
     delete_demande             : 'حذف الطلب'  ,
     disactivate             :'إيقاف الطلب'  ,
     are_you_sur             :'هل أنت متأكد'  ,
@@ -163,6 +173,8 @@ export default {
     origine           : 'مصدر القطعة' ,
     demande_added           : "تمت إضافة طلب جديد",
     type_filter        : 'نوع المركبة' ,
+    no_result_found           : "لا توجد طلبات",
+    optionnel           : "إختياري (غير ضروري)",
     //
     contact_info           :'حول الإتصال',
     category_info           :' حول الأصناف ',
@@ -176,6 +188,7 @@ export default {
     filter           : 'بحث',
     since         : 'منذ',
     updated       : 'تم حفظ التغييرات ',
+    check_password     : 'تأكد من كلمة المرور',
   
 
   }

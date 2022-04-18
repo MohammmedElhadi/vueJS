@@ -221,7 +221,6 @@ export default {
   },
   methods: {
     markNotificationAsRead() {
-      console.log('sdfsdfsdf');
      this.notificationKey = this.notificationKey==0 ? (this.notificationKey-1) : this.notificationKey;
     },
     getStats(){
@@ -239,8 +238,7 @@ export default {
           if (this.notifications)
             this.notificationKey = this.notifications.count;
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
         });
     },
     async logout() {
@@ -265,8 +263,7 @@ export default {
       // djs.locale(this.$i18n.locale) 
     },
     handleMenuItemClick(lang) {
-      HTTP.post("api/user/lang", lang).then((response) => {
-        console.log(response.data);
+      HTTP.post("api/user/lang", lang).then(() => {
       });
       this.activeLang = lang.title;
       this.$i18n.locale = lang.abr;

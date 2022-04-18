@@ -3,7 +3,7 @@
     <file-pond
       name="file"
       ref="pond"
-      label-idle="Déposer les fichiers ici..."
+      :label-idle="$t('put_images_here')"
       v-bind:allow-multiple="true"
       v-bind:server="server"
     />
@@ -59,7 +59,7 @@ export default {
               request.onload = function () {
                   if (request.status >= 200 && request.status < 300) {
                       thisReference.$emit('filePondItemUploaded', request.responseText);
-                      console.log(request.responseText)
+                      // console.log(request.responseText)
                       load(request.responseText);
                   } else {
                       // Can call the error method if something is wrong, should exit after

@@ -1,7 +1,9 @@
 .DS_Store
 node_modules
 /dist
-
+#URLfiles
+src\main.js
+src\http-constants.js
 
 # local env files
 .env.local

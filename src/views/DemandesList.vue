@@ -1,13 +1,22 @@
 <template>
   <div>
-    <div class="justify-center">
-      <v-btn large block text @click="refresh" >
+    <v-row class="justify-center my-3">
+      <v-progress-circular
+        :size="70"
+        :width="7"
+        v-if="loading"
+        color="red"
+        indeterminate
+        
+      ></v-progress-circular>
+      <v-btn  v-if="!loading" large block text @click="refresh">
         <v-icon large>mdi-refresh</v-icon>
       </v-btn>
-    </div>
-    <!-- <div v-if="demandes.length == 0">
-          <h1>No demandes yet</h1>
-    </div> -->
+       <div  v-if="!loading && demandes.length == 0">
+        {{$t('no_result_found')}}
+      </div>
+      
+    </v-row>
     <div class="my-5 px-1" v-for="(demande, index) in demandes" :key="index">
       <demande :demande="demande" :detail="detail"></demande>
     </div>
@@ -22,18 +31,31 @@ export default {
   data: () => ({
     detail: false,
     demandes: [],
+    loading : true
   }),
   methods: {
     ...mapActions({
       sinIn: "auth/login",
     }),
-    async refresh(){
+    async refresh() {
+      this.loading = true
       this.demandes = [];
       this.getDemandes();
     },
-    async getDemandes() {
-      let response = await HTTP.get("api/demande/");
-      this.demandes = response.data;
+    getDemandes() {
+      HTTP.get("api/demande")
+        .then((response) => {
+          this.demandes = response.data;
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+          this.$toasted.error(this.$t("error"), {
+            theme: "bubble",
+            position: "bottom-center",
+            duration: 3000,
+          });
+        });
     },
   },
 

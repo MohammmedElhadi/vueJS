@@ -70,10 +70,9 @@ export default {
   name: "login",
   data: () => ({
     phoneRules: [
-      (v) => !!v || "",
-      (v) => /^\d+$/.test(v) || "",
-      // (v) => !!v || "Phone is required",
-      // (v) => /^\d+$/.test(v) || "Phone must be a number",
+      (v) => !!v || "required",
+      (v) => v.length === 10 || "<10",
+      (v) => /^\d+$/.test(v) || "number",
     ],
     // passRules: [(v) => !!v || "password is required"],
     passRules: [(v) => !!v || ""],
@@ -98,14 +97,14 @@ export default {
                 this.$router.go()
               }
             })
-            .catch(() => {
-              this.$toasted.error(this.$t('credentials')
+            .catch((error) => {
+              let message = error.response.data.message;
+              this.$toasted.error(this.$t(message)
                ,
                 {
                   theme: "bubble",
                   position: "top-center",
                   duration: 3000,
-                  block: true,
                   keepOnHover: true,
                 }
               );
