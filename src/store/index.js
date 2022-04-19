@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import {HTTP} from "../http-constants";
 import auth from "./auth";
+import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 
@@ -10,6 +11,9 @@ const store = new Vuex.Store({
         wilayas : [],
         etats : [],
     },
+    plugins:[
+        createPersistedState()
+    ],
     mutations: {
        SET_WILAYAS(state , wilayas){
            state.wilayas = wilayas;
