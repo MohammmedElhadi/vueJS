@@ -34,12 +34,28 @@
             <v-list-item-title>{{ $t("Search_page") }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="logged_user.is_admin" link :to="{ name: 'users' }">
+        <v-list-item color="green" v-if="logged_user.is_admin" link :to="{ name: 'users' }">
           <v-list-item-action>
-            <v-icon>mdi-home </v-icon>
+            <v-icon>mdi-account </v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>{{ $t("Users") }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item color="green" v-if="logged_user.is_admin" link :to="{ name: 'marques' }">
+          <v-list-item-action>
+            <v-icon>mdi-account </v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t("Marques") }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item color="green" v-if="logged_user.is_admin" link :to="{ name: 'demandes' }">
+          <v-list-item-action>
+            <v-icon>mdi-account </v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t("Demandes") }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item

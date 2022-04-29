@@ -120,17 +120,6 @@ export default {
           })
       },
 
-   
-      updateItem(user){
-        HTTP.put('api/admin/user/'+user.id , {is_actif :user.is_actif})
-            .then((response)=>{
-               this.$toasted.success(this.$t(response.data.success), {
-                  theme: "bubble",
-                  position: "bottom-center",
-                  duration: 3000,
-                });
-            })
-      },
        getTypes() {
       HTTP.get("api/type")
         .then((repsponse) => {
@@ -150,9 +139,6 @@ export default {
   created() {
     this.getTypes();
     this.initialize();
-    // HTTP.get("api/demande").then((response) => {
-    //   this.demandes = response.data;
-    // });
   },
 };
 </script>

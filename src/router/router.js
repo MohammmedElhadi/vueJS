@@ -10,6 +10,7 @@ import detail from "../views/detail";
 import profile from "../views/profile";
 import users from "../views/users";
 import AdminDemandes from "../views/AdminDemandes";
+import AdminMarques from "../views/AdminMarques";
 import store from '../store/index'
 
 Vue.use(VueRouter);
@@ -27,6 +28,15 @@ const routes = [
           },
     },
     {
+        path: '/admin/marques',
+        name: 'marques',
+        component: AdminMarques,
+        beforeEach : () => {
+             return store.state.auth.user.is_admin;
+            // return true;
+          },
+    },
+    {
         path: '/admin/demandes',
         name: 'demandes',
         component: AdminDemandes,
@@ -36,7 +46,7 @@ const routes = [
           },
     },
     {
-        path: '/',
+        path: '/accueil',
         name: 'accueil',
         component: DemandesList
     },

@@ -14,6 +14,7 @@ export default {
     credentials       : "Le mot de passe est eronné",
     user_not_found       : "Ce numéro de télephone n'existe pas",
     already_registred       : "le numéro de telephone est déja utilisé",
+    disactive_account       : "Ce compte est désactivé, veuillez contacter l'administrateur",
     //Offer
     wilaya       : 'Wilaya',
     etat          :'Etat',
@@ -113,6 +114,7 @@ export default {
     credentials       : "المعلومات التي أدخلتها خاطئة، تأكد منها من فضلك",
     user_not_found       : "ليس هناك حساب بهذا الرقم",
     already_registred       : "هذا الرقم مسجل",
+    disactive_account        : 'هذا الحساب مغلق، اتصل بالمشرفين على الموقع لمعرفة المشكلة' ,
 
     // Offer
     new_offer     : 'عرض جديد',
