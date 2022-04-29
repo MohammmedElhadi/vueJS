@@ -5,6 +5,7 @@ import router from './router/router';
 import store from './store'
 import axios from 'axios'
 import i18n from './i18n/i18n';
+import pagination from 'laravel-vue-pagination'
 
 /*********************************/
 Vue.config.productionTip = false
@@ -47,7 +48,6 @@ Vue.use(VueEcho, {
             callback(false, response.data);
           })
           .catch((error) => {
-            console.log(error)
             callback(true, error);
           });
       },
@@ -56,6 +56,7 @@ Vue.use(VueEcho, {
 });
 
 /*********************************/
+Vue.component('pagination',pagination);
 Vue.component('filepond-component', require('./components/FilepondComponent.vue').default);
 /*********************************/
 // Vue.component('image-box ', 'vue-image-box');

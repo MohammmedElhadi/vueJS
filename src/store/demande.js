@@ -1,28 +1,24 @@
 import {HTTP} from "../http-constants";
-import createPersistedState from 'vuex-persistedstate'
 
 export default{
+    namespaced: true,
     state: {
-        wilayas : [],
-        etats : [],
+        types : [],
+
     },
     mutations: {
-       SET_WILAYAS(state , wilayas){
-           state.wilayas = wilayas;
-       },
-        SET_ETATS(state , etats){
-           state.etats = etats;
+       SET_TYPES(state , types){
+           state.types = types;
        },
     },
     actions :{
-        async loadWilayas({commit}){
-            let response = await HTTP.get('api/wilaya');
-            commit('SET_WILAYAS' , response.data);
+        loadTypes({commit}){
+            HTTP.get('api/type').then((response) =>{
+                commit('SET_TYPES' , response.data);
+            });
+
         },
-        async loadEtats({commit}){
-            let response = await HTTP.get('api/etat');
-            commit('SET_ETATS' , response.data);
-        }
+     
     },
 
 }

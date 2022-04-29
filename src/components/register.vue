@@ -62,7 +62,16 @@
               >
                 {{ $t("next") }}
               </v-btn>
+
+                 <v-progress-circular
+                 v-if="loading"
+                 class="mx-10"
+                  v-show="e1 == 3"
+                indeterminate
+                color="success"
+              ></v-progress-circular>
               <v-btn
+                v-else
                 color="success"
                 class="mx-10"
                 v-show="e1 == 3"
@@ -429,6 +438,7 @@ export default {
     subsubcategories: [],
     wilayas: [],
     etats: [],
+    loading : false
   }),
   computed: {},
   methods: {
@@ -528,9 +538,11 @@ export default {
      }
      else{
           if (this.$refs.form.validate()) {
+            this.loading = true
         HTTP.post("api/register", this.user)
           .then((response) => {
             if (response.status == 200) {
+
               HTTP.get("/sanctum/csrf-cookie").then(() => {
                 HTTP.post("api/login", {
                   phone: this.user.phone,
@@ -545,17 +557,31 @@ export default {
                       position: "top-center",
                       duration: 5000,
                     });
+                    setTimeout(() => {
                     this.$router.go();
+                    }, 2000);
+                  
                   })
                   .catch(() => {
-               
+                    this.loading = false
+                     this.$toasted.error(this.$t("error"), {
+                      theme: "bubble",
+                      position: "top-center",
+                      duration: 5000,
+                    });
+                    
                   })
-                  .finally();
+                  .finally(()=>{
+                    this.loading = false
+                  });
+                
+              }).catch(()=>{
+                  this.loading = false
               });
             }
           })
           .catch((error) => {
-             console.log(error.response.data);
+              this.loading = false
               this.e1 = 1;
               let message = error.response.data.message;
               this.$toasted.error(this.$t(message)
@@ -564,10 +590,10 @@ export default {
                   theme: "bubble",
                   position: "top-center",
                   duration: 3000,
-                  keepOnHover: true,
                 }
               );
             })
+            // this.loading= false;
 
       } else {
         if (this.user.types.length == 0) {

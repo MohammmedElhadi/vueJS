@@ -64,17 +64,24 @@
           />
           <v-row justify="center">
             <v-col v-show="has_offer" md="8" lg="6" xl="6" cols="12">
-            <v-carousel height="300" v-if="offer.images.length > 0">
-              <v-carousel-item
-                v-for="(image, i) in offer.images"
-                :key="i"
-                :src="image.imageURL"
-              ></v-carousel-item>
-            </v-carousel>
-          </v-col>
+              <v-carousel height="300" v-if="offer.images.length > 0">
+                <v-carousel-item
+                  v-for="(image, i) in offer.images"
+                  :key="i"
+                  :src="image.imageURL"
+                ></v-carousel-item>
+              </v-carousel>
+            </v-col>
           </v-row>
         </v-col>
+        <v-progress-circular
+          v-if="loading"
+          class="mx-10"
+          indeterminate
+          color="success"
+        ></v-progress-circular>
         <v-btn
+          v-else
           dense
           fa-flip-horizontal
           rounded
@@ -84,7 +91,7 @@
         >
           {{ $t("responde") }}
         </v-btn>
-        <v-dialog v-if="offer.id" v-model="delete_dialog" width="500">
+        <v-dialog v-if="has_offer" v-model="delete_dialog" width="500">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               dense
@@ -110,7 +117,13 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="red darken-2" text @click="retirerOffer">
+                <v-progress-circular
+                  v-if="loading"
+                  class="mx-10"
+                  indeterminate
+                  color="red"
+                ></v-progress-circular>
+              <v-btn v-else color="red darken-2" text @click="retirerOffer">
                 {{ $t("yes_delete") }}
               </v-btn>
             </v-card-actions>
@@ -125,6 +138,7 @@ import { HTTP } from "../http-constants";
 export default {
   props: ["demande_id", "user_id"],
   data: () => ({
+    loading: false,
     wilayaRules: [(v) => !!v || "required"],
     etatRules: [(v) => !!v || "required"],
     prixRules: [(v) => !!v || "required"],
@@ -193,6 +207,7 @@ export default {
         return;
       } else {
         if (this.auth) {
+          this.loading = true;
           let formData = new FormData();
           formData.append("demande_id", this.demande_id);
           formData.append("prix_offert", this.offer.prix_offert);
@@ -200,38 +215,30 @@ export default {
           formData.append("etat_id", this.offer.etat_id);
           formData.append("note", this.offer.note);
           formData.append("images", this.offer.images);
-          // debugger
-          let offer;
+          // let offer;
           HTTP.post("api/demande/" + this.demande_id + "/offer", formData)
             .then((response) => {
-              console.log("out ")
               if (response.status === 200) {
-                offer = response.data.offer;
-                this.offer.id = offer.id;
-                this.offer.prix_offert = offer.prix_offert;
-                this.offer.wilaya_id = offer.wilaya_id;
-                this.offer.etat_id = offer.etat_id;
-                this.offer.note = offer.note;
-                this.offer.images = response.data.images;
-                this.disabled = true;
-                this.has_offer = true;
-                this.disabled = true;
                 this.$emit("offer_responded");
                 this.$toasted.success(this.$t("offer_created_success"), {
                   theme: "bubble",
                   position: "bottom-center",
                   duration: 3000,
                 });
-                this.has_offer = true;
+                this.getMyOffer()
+               
               }
             })
-            // .catch(() => {
-            //   this.$toasted.error(this.$t("error"), {
-            //     theme: "bubble",
-            //     position: "bottom-center",
-            //     duration: 3000,
-            //   });
-            // });
+            .catch(() => {
+              this.$toasted.error(this.$t("error"), {
+                theme: "bubble",
+                position: "bottom-center",
+                duration: 3000,
+              });
+            })
+            .finally(() => {
+              this.loading = false;
+            });
         } else {
           this.$toasted.error(this.$t("connect"), {
             theme: "bubble",
@@ -242,6 +249,7 @@ export default {
       }
     },
     retirerOffer() {
+      this.loading = true
       HTTP.delete("api/reponse/" + this.offer.id)
         .then((response) => {
           if (response.status == 200) {
@@ -255,6 +263,7 @@ export default {
               images: [],
               url: "",
             };
+            this.images = []
             this.disabled = false;
             this.has_offer = false;
             this.$emit("remove_offer");
@@ -267,6 +276,9 @@ export default {
         })
         .catch((error) => {
           return [error];
+        })
+        .finally(()=>{
+          this.loading = false
         });
     },
   },

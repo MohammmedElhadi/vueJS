@@ -10,6 +10,8 @@ const store = new Vuex.Store({
     state: {
         wilayas : [],
         etats : [],
+        types : [],
+        continents : [],
     },
     plugins:[
         createPersistedState()
@@ -21,18 +23,38 @@ const store = new Vuex.Store({
         SET_ETATS(state , etats){
            state.etats = etats;
        },
-
+       SET_TYPES(state , types){
+        state.types = types;
+    },
+       SET_CONTINENT(state , continents){
+        state.continents = continents;
+    },
     },
     actions :{
-        async loadWilayas({commit}){
-            let response = await HTTP.get('api/wilaya');
-            commit('SET_WILAYAS' , response.data);
+         loadWilayas({commit}){
+            HTTP.get('api/wilaya').then((response)=>{
+                commit('SET_WILAYAS' , response.data);
+            });
+            
         },
-        async loadEtats({commit}){
-            let response = await HTTP.get('api/etat');
-            commit('SET_ETATS' , response.data);
+        loadEtats({commit}){
+            HTTP.get('api/etat').then((response)=>{                
+                commit('SET_ETATS' , response.data);
+            });
         },
+        loadTypes({commit}){
+            HTTP.get('api/type').then((response) =>{
+                commit('SET_TYPES' , response.data);
+            });
+        },
+        loadContinents({commit}){
+            HTTP.get('api/continent').then((response) =>{
+                commit('SET_CONTINENT' , response.data);
+            });
+
+        },
+     
     },
-    modules :{auth }
+    modules :{auth  }
 })
 export default store;

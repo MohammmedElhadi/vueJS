@@ -12,7 +12,7 @@
       >
     <v-virtual-scroll :items="items" :item-height="50" height="300">
       <template v-slot:default="{ item }">
-        <v-list-item  :key="item.data.id"  @click="getNotification(item)" color="success">
+        <v-list-item :key="item.data.id"  @click="getNotification(item)" color="success">
           <template v-slot:default="{ active }">
           <v-list-item-avatar>
             <v-avatar
@@ -36,7 +36,7 @@
               }}
             </v-avatar>
           </v-list-item-avatar>
-          <v-list-item-content>
+          <v-list-item-content  >
             <v-list-item-title
               v-resize-text="{
                 ratio: 1,
@@ -59,6 +59,9 @@
                 >
                   mdi-circle-outline
                 </v-icon>
+                  <v-icon v-else color="grey lighten-1">
+                      mdi-circle
+                    </v-icon>
           </v-list-item-action>
           </template>
         </v-list-item>
@@ -81,11 +84,11 @@ export default {
   },
   methods: {
     getRead(){
-      let notis =  this.notifications.notifications.filter((el) => {
+      let notis =  this.items.filter((el) => {
             return el.read_at != null;
-      }).map(({id}) => ({id}))
+      })
       for(let not in notis){
-          this.read.push(parseInt(not))
+          this.read.push(this.notifications.notifications.indexOf(notis[not]))
       }
 
     },

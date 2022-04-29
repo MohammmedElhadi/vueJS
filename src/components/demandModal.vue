@@ -54,7 +54,14 @@
               >
                 {{ $t("next") }}
               </v-btn>
+                <v-progress-circular
+                 v-if="loading"
+                 class="mx-10"
+                indeterminate
+                color="success"
+              ></v-progress-circular>
               <v-btn
+                v-else
                 color="success"
                 class="mx-10"
                 v-show="e1 == 3"
@@ -342,6 +349,7 @@ import { HTTP } from "../http-constants";
 export default {
   props:['demande_dialog'],
   data: () => ({
+    loading : false,
     is_automobile: false,
     is_vehicule: false,
     typeRules: [(v) => !!v || "required"],
@@ -490,9 +498,11 @@ export default {
       data.append("images", this.images);
       if (this.$store.state.auth.authenticated) {
         if (this.$refs.form.validate()) {
+          this.loading = true
           HTTP.post("api/demande", data, config)
             .then((response) => {
               if (response.status == 200) {
+                
                 this.demande_dialog = false;
                 this.$toasted.success("Demande créée avec succés!", {
                   theme: "bubble",
@@ -527,7 +537,16 @@ export default {
               }
             })
             .catch(() => {
-
+                    this.$toasted.error(this.$t('error'))
+               ,
+                {
+                  theme: "bubble",
+                  position: "top-center",
+                  duration: 3000,
+                }
+              
+            }).finally(()=>{
+              this.loading = false
             });
         } else {
           if (!this.demand.type) {

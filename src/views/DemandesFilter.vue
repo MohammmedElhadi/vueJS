@@ -122,13 +122,25 @@
         color="red"
         indeterminate
       ></v-progress-circular>
-      <div  v-if="!loading && demandes.length == 0">
-        {{$t('no_result_found')}}
+      <div v-if="!loading && demandes.length == 0">
+        {{ $t("no_result_found") }}
       </div>
     </v-row>
     <div class="my-5 px-1" v-for="(demande, index) in demandes" :key="index">
       <demande :demande="demande" :detail="detail"></demande>
     </div>
+    <v-row class="justify-center my-3">
+      <v-progress-circular
+        :size="50"
+        :width="5"
+        v-if="moreLoading"
+        color="red"
+        indeterminate
+      ></v-progress-circular>
+      <v-btn v-else v-show="moreExists" @click="getMoreDemandes">{{
+        $t("show_more")
+      }}</v-btn>
+    </v-row>
   </div>
 </template>
 <script>
@@ -137,7 +149,11 @@ import { HTTP } from "../http-constants";
 export default {
   components: { Demande },
   data: () => ({
-     loading : true,
+    moreExists: false,
+    nextpage: 0,
+    moreLoading: false,
+
+    loading: true,
     is_automobile: false,
     is_vehicule: false,
     detail: false,
@@ -170,9 +186,7 @@ export default {
         .then((repsponse) => {
           this.types = repsponse.data;
         })
-        .catch(() => {
-
-        });
+        .catch(() => {});
     },
     getMarques() {
       if (this.search.type_filters) {
@@ -185,9 +199,7 @@ export default {
             .then((repsponse) => {
               this.marques = repsponse.data;
             })
-            .catch(() => {
-              
-            });
+            .catch(() => {});
         } else {
           this.is_vehicule = true;
           this.search.continent_filters = [];
@@ -202,26 +214,31 @@ export default {
         .then((repsponse) => {
           this.continents = repsponse.data;
         })
-        .catch(() => {
-          
-        });
+        .catch(() => {});
     },
     getDemandes() {
       this.demandes = [];
-      this.loading = true
+      this.loading = true;
       HTTP.get(
         "api/" +
           this.$route.params.filter +
           "/" +
           this.$route.params.id +
-          "/demandes"
+          "/demandes?page=1"
       )
         .then((response) => {
-          this.demandes = response.data;
-          this.loading = false
+          let pagination = response.data.pagination;
+          if (pagination.current_page < pagination.last_page) {
+            (this.moreExists = true),
+              (this.nextpage = pagination.current_page + 1);
+          } else {
+            this.moreExists = false;
+          }
+          this.demandes = response.data.data;
+          this.loading = false;
         })
         .catch(() => {
-          this.loading = false
+          this.loading = false;
           this.$toasted.error(this.$t("Préciser les critères de recherche"), {
             theme: "bubble",
             position: "bottom-center",
@@ -229,9 +246,44 @@ export default {
           });
         });
     },
+    getMoreDemandes() {
+      this.moreLoading = true;
+      HTTP.get(
+        "api/" +
+          this.$route.params.filter +
+          "/" +
+          this.$route.params.id +
+          "/demandes?page=" +
+          this.nextpage
+      )
+        .then((response) => {
+          let pagination = response.data.pagination;
+          if (pagination.current_page < pagination.last_page) {
+            (this.moreExists = true),
+              (this.nextpage = pagination.current_page + 1);
+          } else {
+            this.moreExists = false;
+          }
+          response.data.data.forEach((demande) => {
+            this.demandes.push(demande);
+          });
+          this.loading = false;
+        })
+        .catch(() => {
+          this.loading = false;
+          this.$toasted.error(this.$t("error"), {
+            theme: "bubble",
+            position: "bottom-center",
+            duration: 3000,
+          });
+        })
+        .finally(() => {
+          this.moreLoading = false;
+        });
+    },
     filterDemandes() {
       this.demandes = [];
-      this.loading = true
+      this.loading = true;
       let url =
         "api/filter/?" +
         "marques=" +
@@ -240,11 +292,13 @@ export default {
         JSON.stringify(this.search.type_filters) +
         "&continents=" +
         JSON.stringify(this.search.continent_filters);
-      HTTP.get(url).then((response) => {
-        this.demandes = response.data;
-        this.loading = false
-      }).catch(() => {
-          this.loading = false
+      HTTP.get(url)
+        .then((response) => {
+          this.demandes = response.data;
+          this.loading = false;
+        })
+        .catch(() => {
+          this.loading = false;
           this.$toasted.error(this.$t("error"), {
             theme: "bubble",
             position: "bottom-center",
@@ -273,12 +327,19 @@ export default {
       () => this.$route.params,
       (toParams) => {
         this.demandes = [];
-        this.loading = true
+        this.loading = true;
         HTTP.get(
-          "api/" + toParams.filter + "/" + toParams.id + "/demandes"
+          "api/" + toParams.filter + "/" + toParams.id + "/demandes?page=1"
         ).then((response) => {
-          this.loading = false
-          this.demandes = response.data;
+          let pagination = response.data.pagination;
+          if (pagination.current_page < pagination.last_page) {
+            (this.moreExists = true),
+              (this.nextpage = pagination.current_page + 1);
+          } else {
+            this.moreExists = false;
+          }
+          this.loading = false;
+          this.demandes = response.data.data;
         });
       }
     );

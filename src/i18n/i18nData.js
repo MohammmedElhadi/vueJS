@@ -42,7 +42,7 @@ export default {
     Search_page             : "Page de recherche"  ,
     error             : "Essayer un peu plus tard SVP"  ,
     new_offer         : 'Nouvelle offre',
-    some_one_responded_to_your_demand         : 'Vous avez reçus une reponse sur votre demande',
+    some_one_responded_to_your_demand         : 'Vous avez reçus une reponse sur votre demande ',
     since         : 'Depuis',
     //demande
     new_demand      : 'Nouvelle demande',
@@ -141,7 +141,7 @@ export default {
     rows_per_page     : 'صف في الصفحة',
     detail_offer             : "تفاصيل العرض"  ,
     Search_page             : "صفحة البحث"  ,
-    offer_added           : 'أرسل أحدهم عرضا عل الطلب ',
+    offer_added           : 'أرسل أحدهم عرضا على الطلب ',
     some_one_responded_to_your_demand         : 'عرض أحدهم قطعة لطلبك ',
     put_images_here         : 'أضف الصور من هنا',
 

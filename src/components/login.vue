@@ -51,9 +51,16 @@
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions class="justify-center">
-            <v-btn color="success mx-10" @click.prevent="login">
+            <v-progress-circular
+                 v-if="loading"
+                 class="mx-10"
+                indeterminate
+                color="success"
+              ></v-progress-circular>
+            <v-btn v-else color="success mx-10" @click.prevent="login">
               {{$t('login')}}
             </v-btn>
+
             <v-spacer />
           </v-card-actions>
         </v-form>
@@ -69,6 +76,7 @@ export default {
 
   name: "login",
   data: () => ({
+    loading : false,
     phoneRules: [
       (v) => !!v || "required",
       (v) => v.length === 10 || "<10",
@@ -86,6 +94,7 @@ export default {
   methods: {
     login() {
       if (this.$refs.form.validate()) {
+        this.loading= true
         HTTP.get("/sanctum/csrf-cookie").then(() => {
           console.log("sanctum/csrf-cookie");
           HTTP.post("api/login", this.user)
@@ -94,10 +103,13 @@ export default {
                 this.$store.dispatch("auth/login");
                 this.dialog = false;
                 this.$emit("RefreshUser");
-                this.$router.go()
+               setTimeout(() => {
+                  this.$router.go()
+               }, 2000);
               }
             })
             .catch((error) => {
+              this.loading= false
               let message = error.response.data.message;
               this.$toasted.error(this.$t(message)
                ,
@@ -109,8 +121,11 @@ export default {
                 }
               );
             })
-            .finally();
+            .finally(()=>{
+                this.loading= false;
+            });
         });
+
       }
       
     },

@@ -17,7 +17,7 @@
       :items="users"
       :items-per-page="10"
       class="elevation-1"
-      :sort-by="['calories', 'fat']"
+      :sort-by="['inscription', 'wilaya']"
       :sort-desc="[false, true]"
       multi-sort
     >
@@ -66,7 +66,6 @@
                           multiple
                           item-text="nom_fr"
                           item-value="id"
-                          :rules="typeRules"
                           :label="$t('type')"
                           v-model="editedItem.types"
                         >
@@ -105,8 +104,9 @@
         </v-toolbar>
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-        <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+        <!-- <v-icon  class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
+        <v-icon  @click="deleteItem(item)"> mdi-delete </v-icon> -->
+        <v-icon  @click="updateItem(item)"> mdi-update</v-icon>
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="initialize"> Reset </v-btn>
@@ -130,6 +130,11 @@
             {{               
                 item.demandes.length
             }}
+      </template>
+      <template v-slot:item.is_actif="{ item }">
+            <v-switch
+            v-model="item.is_actif"
+          ></v-switch>
       </template>
       <!-- <template v-slot:body="{ items }">
         <tbody>
@@ -163,7 +168,8 @@ export default {
       { text: "inscription", value: "created_at" },
       { text: "Demandes", value: "demandes" },
       { text: "Types", value: "types" },
-      { text: "Actions", value: "actions", sortable: false },
+      { text: "Actif", value: "is_actif", sortable: false },
+      { text: "Actions", value: "actions" },
     ],
     editedIndex: -1,
     editedItem: {
@@ -176,6 +182,7 @@ export default {
       name: "",
       phone: "",
       wilaya: "",
+      types : []
     },
     types: [],  
   }),
@@ -189,11 +196,7 @@ export default {
         getTime(timestamp){
            return djs(timestamp).format('DD/MM/YYYY') 
         },
-        editItem (item) {
-        this.editedIndex = this.users.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
-      },
+     
       deleteItem (item) {
         this.editedIndex = this.users.indexOf(item)
         this.editedItem = Object.assign({}, item)
@@ -204,7 +207,16 @@ export default {
         this.users.splice(this.editedIndex, 1)
         this.closeDelete()
       },
-
+      updateItem(user){
+        HTTP.put('api/admin/user/'+user.id , {is_actif :user.is_actif})
+            .then((response)=>{
+               this.$toasted.success(this.$t(response.data.success), {
+                  theme: "bubble",
+                  position: "bottom-center",
+                  duration: 3000,
+                });
+            })
+      },
       close () {
         this.dialog = false
         this.$nextTick(() => {
@@ -238,6 +250,11 @@ export default {
      
         });
     },
+    initialize(){
+      HTTP.get("api/admin/user").then((response) => {
+      this.users = response.data;
+    });
+    }
     },
 
   created() {

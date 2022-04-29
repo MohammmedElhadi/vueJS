@@ -242,7 +242,9 @@
         </v-row>
       </v-card-text>
 
-      <v-expansion-panels >
+      <v-expansion-panels 
+      v-model="open" 
+      multiple>
         <v-expansion-panel>
           <v-expansion-panel-header v-if="owner" @click="show_detail = true">
             {{ $t("show_offers") }}</v-expansion-panel-header
@@ -286,6 +288,7 @@ export default {
     show: true,
     show_detail: false,
     delete_dialog: false,
+    open : []
   }),
   computed: {
     sinse() {
@@ -357,7 +360,9 @@ export default {
     },
   },
   created() {
+    this.open = this.detail?[0]:[]
     this.show_detail = this.detail;
+
   },
   mounted() {},
   updated() {},

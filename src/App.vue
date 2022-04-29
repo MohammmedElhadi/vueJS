@@ -34,14 +34,14 @@
             <v-list-item-title>{{ $t("Search_page") }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <!-- <v-list-item link :to="{ name: 'users' }">
+        <v-list-item v-if="logged_user.is_admin" link :to="{ name: 'users' }">
           <v-list-item-action>
             <v-icon>mdi-home </v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>{{ $t("Users") }}</v-list-item-title>
           </v-list-item-content>
-        </v-list-item> -->
+        </v-list-item>
         <v-list-item
           v-if="auth"
           link
@@ -82,7 +82,12 @@
           <v-list-item-action>
             <v-btn v-if="auth" icon><v-icon>mdi-logout</v-icon></v-btn>
           </v-list-item-action>
-          <v-list-item-title>{{ $t("disconnect") }}</v-list-item-title>
+          <v-progress-circular
+            v-if="loading"
+            class="mx-10"
+            indeterminate
+          ></v-progress-circular>
+          <v-list-item-title v-else>{{ $t("disconnect") }}</v-list-item-title>
         </v-list-item>
         <v-list-item v-else>
           <v-list-item-title>
@@ -163,7 +168,6 @@
         </template>
         <notifications
           :notifications="notifications"
-          :key="notificationKey"
           @markNotificationAsRead="markNotificationAsRead()"
         ></notifications>
       </v-menu>
@@ -201,6 +205,7 @@ export default {
     Notificationssource: String,
   },
   data: () => ({
+    loading: false,
     stats: [],
     langs: [
       { title: "Français", abr: "fr", rtl: false },
@@ -216,16 +221,13 @@ export default {
     notificationKey: 0,
     menu: false,
   }),
-  mounted() {
-    this.$store.dispatch("loadWilayas");
-    this.$store.dispatch("loadEtats");
-  },
+
   methods: {
     markNotificationAsRead() {
       this.notificationKey =
         this.notificationKey == 0
-          ? this.notificationKey - 1
-          : this.notificationKey;
+          ? this.notificationKey
+          : this.notificationKey - 1;
     },
     getStats() {
       HTTP.get("api/stat").then((response) => {
@@ -244,12 +246,24 @@ export default {
         })
         .catch(() => {});
     },
-    async logout() {
-      await HTTP.post("api/logout").then(() => {
-        this.singOut();
-        this.$router.push({ name: "accueil" });
-        this.$router.go();
-      });
+    logout() {
+      this.loading = true;
+      HTTP.post("api/logout")
+        .then(() => {
+          this.singOut();
+          this.$router.push({ name: "accueil" });
+          this.$router.go();
+        })
+        .catch(() => {
+          this.$toasted.error(this.$t("error"), {
+            theme: "bubble",
+            position: "bottom-center",
+            duration: 3000,
+          });
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     RefreshU() {
       this.logged_user = this.$store.state.auth.user;
@@ -272,12 +286,12 @@ export default {
       this.$vuetify.rtl = lang.rtl;
     },
 
-    initListners() {
+    listneres() {
       this.$echo
-        .private("demands_channel_" + this.logged_user.id)
-        .listen("NewDemandeAdded", (payload) => {
-          this.notifications.notifications.unshift(payload.notification);
-          this.notificationKey += 1;
+        .private("demands_channel_" + this.$store.state.auth.user.id)
+        .listen("NewDemandeAdded", () => {
+          this.notifications = [];
+          this.getNotifications();
           this.$toasted.success(this.$t("demande_added"), {
             theme: "bubble",
             position: "bottom-center",
@@ -287,12 +301,12 @@ export default {
           audio.play();
         });
       this.$echo
-        .private("response_for_" + this.logged_user.id)
+        .private("response_for_" + this.$store.state.auth.user.id)
         .listen("NewReponseAdded", (payload) => {
-          this.notifications.notifications.unshift(payload.notification);
-          this.notificationKey += 1;
+          this.notifications = [];
+          this.getNotifications();
           this.$toasted.success(
-            this.$t("offer_added") + payload.notification.data.demande.id,
+            this.$t("offer_added") + " " + payload.notification.data.demande.id,
             {
               theme: "bubble",
               position: "bottom-right",
@@ -316,9 +330,17 @@ export default {
       return this.$vuetify.theme.dark ? this.logo_dark : this.logo_light;
     },
   },
-
+  beforeCreate() {
+    if (this.$store.state.auth.authenticated) {
+      this.$store.dispatch("loadWilayas");
+      this.$store.dispatch("loadEtats");
+      this.$store.dispatch("loadTypes");
+      this.$store.dispatch("loadContinents");
+      this.$i18n.locale = this.$store.state.auth.user.lang;
+      this.$vuetify.rtl = this.$store.state.auth.user.lang.rtl;
+    }
+  },
   created() {
-    this.initListners();
     this.getNotifications();
     if (this.auth) {
       let lang = this.langs.find(
@@ -331,15 +353,12 @@ export default {
     this.$store.dispatch("auth/login");
     this.$vuetify.theme.dark = true;
   },
-  beforeCreate() {
-    if (this.auth) {
-      this.$i18n.locale = this.$store.state.auth.user.lang;
-      // this.$vuetify.rtl = lang.rtl;
-    }
-  },
-  updated() {},
-  destroyed() {
-    this.singOut();
+
+  mounted() {
+    // this.RefreshU();
+    this.listneres();
+    // setTimeout(()=>{}, 5000);
+    //
   },
 };
 </script>

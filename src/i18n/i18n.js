@@ -15,6 +15,6 @@ import i18nData from './i18nData'
 Vue.use(VueI18n)
 
 export default new VueI18n({
-  locale: 'fr',
+  locale: 'ar',
   messages: i18nData
 })
