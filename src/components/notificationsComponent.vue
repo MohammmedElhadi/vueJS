@@ -161,6 +161,8 @@ export default {
     },
   },
   created() {
+    if(this.$store.state.wilayas.length === 0)
+          this.$store.dispatch("loadWilayas");
     this.getNotifications();
     },
     mounted(){

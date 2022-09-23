@@ -8,45 +8,45 @@ import DemandesRepondue from '../views/DemandesRepondue'
 import DemandesFilter from '../views/DemandesFilter'
 import detail from "../views/detail";
 import profile from "../views/profile";
-import users from "../views/users";
-import AdminDemandes from "../views/AdminDemandes";
-import AdminMarques from "../views/AdminMarques";
-import store from '../store/index'
+// import users from "../views/users";
+// import AdminDemandes from "../views/AdminDemandes";
+// import AdminMarques from "../views/AdminMarques";
+// import store from '../store/index'
 
 Vue.use(VueRouter);
 
 const routes = [
     
 
+    // {
+    //     path: '/admin/users',
+    //     name: 'users',
+    //     component: users,
+    //     beforeEach : () => {
+    //          return store.state.auth.user.is_admin;
+    //         // return true;
+    //       },
+    // },
+    // {
+    //     path: '/admin/marques',
+    //     name: 'marques',
+    //     component: AdminMarques,
+    //     beforeEach : () => {
+    //          return store.state.auth.user.is_admin;
+    //         // return true;
+    //       },
+    // },
+    // {
+    //     path: '/admin/demandes',
+    //     name: 'demandes',
+    //     component: AdminDemandes,
+    //     beforeEach : () => {
+    //          return store.state.auth.user.is_admin;
+    //         // return true;
+    //       },
+    // },
     {
-        path: '/admin/users',
-        name: 'users',
-        component: users,
-        beforeEach : () => {
-             return store.state.auth.user.is_admin;
-            // return true;
-          },
-    },
-    {
-        path: '/admin/marques',
-        name: 'marques',
-        component: AdminMarques,
-        beforeEach : () => {
-             return store.state.auth.user.is_admin;
-            // return true;
-          },
-    },
-    {
-        path: '/admin/demandes',
-        name: 'demandes',
-        component: AdminDemandes,
-        beforeEach : () => {
-             return store.state.auth.user.is_admin;
-            // return true;
-          },
-    },
-    {
-        path: '/accueil',
+        path: '/',
         name: 'accueil',
         component: DemandesList
     },

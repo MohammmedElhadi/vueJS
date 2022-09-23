@@ -139,9 +139,11 @@ export default {
   props: ["demande_id", "user_id"],
   data: () => ({
     loading: false,
-    wilayaRules: [(v) => !!v || "required"],
-    etatRules: [(v) => !!v || "required"],
-    prixRules: [(v) => !!v || "required"],
+    wilayaRules: [(v) => !!v || ""],
+    etatRules: [(v) => !!v || ""],
+    prixRules: [(v) => !!v || "",
+                (v) => /^\d+$/.test(v) || ""
+              ],
 
     disabled: false,
     delete_dialog: false,
@@ -159,9 +161,13 @@ export default {
   }),
   computed: {
     wilayas() {
+      if(this.$store.state.wilayas.length === 0)
+          this.$store.dispatch("loadWilayas");
       return this.$store.state.wilayas;
     },
     etats() {
+      if(this.$store.state.etats.length === 0)
+          this.$store.dispatch("loadEtats");
       return this.$store.state.etats;
     },
     auth() {

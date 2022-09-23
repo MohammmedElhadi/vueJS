@@ -50,7 +50,7 @@
             :items="marques"
             :item-text="getName()"
             item-value="id"
-            :label="$t('marque_filter')"
+            :label="$t('marque')"
             v-model="search.marque_filters"
           >
             <template v-slot:selection="data">
@@ -239,7 +239,7 @@ export default {
         })
         .catch(() => {
           this.loading = false;
-          this.$toasted.error(this.$t("Préciser les critères de recherche"), {
+          this.$toasted.error(this.$t("set_fields"), {
             theme: "bubble",
             position: "bottom-center",
             duration: 3000,
@@ -315,12 +315,14 @@ export default {
     },
   },
   computed: {
-    wilayas() {
-      return this.$store.state.wilayas;
-    },
-    etats() {
-      return this.$store.state.etats;
-    },
+    // wilayas() {
+    //   if(this.$store.state.wilayas.length === 0)
+    //       this.$store.dispatch("loadWilayas");
+    //   return this.$store.state.wilayas;
+    // },
+    // etats() {
+    //   return this.$store.state.etats;
+    // },
   },
   created() {
     this.$watch(

@@ -16,7 +16,7 @@
       </div>
     </v-row>
     <div class="my-5 px-1" v-for="(demande, index) in demandes" :key="index">
-      <demande :demande="demande" :detail="detail"></demande>
+      <demande v-bind:demande="demande" v-bind:detail="detail"></demande>
     </div>
    
     <v-row class="justify-center my-3">

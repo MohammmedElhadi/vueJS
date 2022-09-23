@@ -1,5 +1,6 @@
 module.exports = {
     devServer: {
-        host: 'frontend.auto_parts.local'
+        host: 'frontend.auto_parts.local',
+
     }
 }

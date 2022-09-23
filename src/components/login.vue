@@ -78,9 +78,9 @@ export default {
   data: () => ({
     loading : false,
     phoneRules: [
-      (v) => !!v || "required",
-      (v) => v.length === 10 || "<10",
-      (v) => /^\d+$/.test(v) || "number",
+      (v) => !!v || "",
+      (v) => 9 <= v.length && v.length<= 10 || "",
+      (v) => /^\d+$/.test(v) || "",
     ],
     // passRules: [(v) => !!v || "password is required"],
     passRules: [(v) => !!v || ""],

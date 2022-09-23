@@ -2,6 +2,7 @@ import axios from 'axios'
 
 let baseURL
 axios.defaults.withCredentials = true;
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
   baseURL = 'http://auto_parts.local:8080/'
 } else {

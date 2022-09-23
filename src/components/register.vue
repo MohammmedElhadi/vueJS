@@ -35,13 +35,13 @@
                   <v-divider></v-divider>
 
                   <v-stepper-step :complete="e1 > 2" step="2">
-                    {{ $t("category_info") }}
+                    {{ $t("marque_info") }}
                   </v-stepper-step>
 
                   <v-divider></v-divider>
 
                   <v-stepper-step step="3">
-                    {{ $t("marque_info") }}
+                    {{ $t("category_info") }}
                   </v-stepper-step>
                 </v-stepper-header>
                    <v-card-actions>
@@ -83,21 +83,6 @@
                 <v-stepper-items>
                   <v-stepper-content step="1">
                     <v-row dense>
-                      
-                      <v-col cols="12">
-                        <!-- profession -->
-                      <v-autocomplete
-                          ref="professions"
-                          prepend-icon="mdi-cog"
-                          :items="professions"
-                          :item-text="getName()"
-                          item-value="id"
-                          :label="$t('profession') + ' *'"
-                          v-model="user.professions"
-                          close
-                        >
-                        </v-autocomplete>
-                      </v-col>
                       <v-col cols="12">
                         <!-- nom -->
                         <v-text-field
@@ -267,9 +252,9 @@
                           </template>
                         </v-autocomplete>
                       </v-col>
-
-                      <v-col cols="12">
-                        <!-- modeles -->
+<!-- modeles -->
+                      <!-- <v-col cols="12">
+                        
                         <v-autocomplete
                           :items="modeles"
                           :messages="$t('optionnel')"
@@ -292,11 +277,25 @@
                             </v-chip>
                           </template>
                         </v-autocomplete>
-                      </v-col>
+                      </v-col> -->
                     </v-row>
                   </v-stepper-content>
                   <v-stepper-content step="3">
                     <v-row dense>
+                      <v-col cols="12">
+                        <!-- profession -->
+                      <v-autocomplete
+                          ref="professions"
+                          prepend-icon="mdi-cog"
+                          :items="professions"
+                          :item-text="getName()"
+                          item-value="id"
+                          :label="$t('profession') + ' *'"
+                          v-model="user.professions"
+                          close
+                        >
+                        </v-autocomplete>
+                      </v-col>
                       <v-col cols="12">
                         <!-- categories -->
                         <v-autocomplete
@@ -324,8 +323,8 @@
                           </template>
                         </v-autocomplete>
                       </v-col>
-                      <v-col cols="12">
-                        <!-- subcategories -->
+                      <!-- subcategories -->
+                      <!-- <v-col cols="12">
                         <v-autocomplete
                           :items="subcategories"
                           :messages="$t('optionnel')"
@@ -350,9 +349,9 @@
                             </v-chip>
                           </template>
                         </v-autocomplete>
-                      </v-col>
-                      <v-col cols="12">
-                        <!-- subsubcategories -->
+                      </v-col> -->
+                      <!-- subsubcategories -->
+                      <!-- <v-col cols="12">
                         <v-autocomplete
                           :items="subsubcategories"
                           :messages="$t('optionnel')"
@@ -376,7 +375,7 @@
                             </v-chip>
                           </template>
                         </v-autocomplete>
-                      </v-col>
+                      </v-col> -->
                     </v-row>
                   </v-stepper-content>
                 </v-stepper-items>
@@ -397,17 +396,17 @@ import { HTTP } from "../http-constants";
 export default {
   name: "register",
   data: () => ({
-    nameRules: [(v) => !!v || "required"],
+    nameRules: [(v) => !!v || ""],
     phoneRules: [
-      (v) => !!v || "required",
-      (v) => v.length === 10 || "<10",
-      (v) => /^\d+$/.test(v) || "number",
+      (v) => !!v || "",
+      (v) => 9 <= v.length && v.length<= 10 || "",
+      (v) => /^\d+$/.test(v) || "",
     ],
     passRules: [(v) => !!v || "required"],
     typeRules: [(v) => v.length != 0 || "required"],
     wilayaRules: [(v) => !!v || "required"],
 
-    e1: 1,
+    e1: 1,  
     dialog: false,
     user: {
       types: [],
@@ -542,7 +541,6 @@ export default {
         HTTP.post("api/register", this.user)
           .then((response) => {
             if (response.status == 200) {
-
               HTTP.get("/sanctum/csrf-cookie").then(() => {
                 HTTP.post("api/login", {
                   phone: this.user.phone,
@@ -604,10 +602,11 @@ export default {
     },
   },
   created(){
+    if(this.$store.state.wilayas.length === 0)
+          this.$store.dispatch("loadWilayas");
     this.wilayas = this.$store.state.wilayas;
   },
   mounted() {
-    this.wilayas = this.$store.state.wilayas;
     this.getProfessions();
     this.getTypes();
     this.getContinents();

@@ -34,6 +34,7 @@ export default {
     offer_demand        : 'Nouveau offre sur votre demande N° ',
     close                 : 'Fermer',
     show_offers     : 'Afficher les Offres',
+    show_more       : 'Afficher plus',
     rows_per_page     : 'ligne par page',
     offer_created_success : 'Votre offre a été enregistré',
     offer_deleted_success : "Offre retiré avec succés",
@@ -79,7 +80,7 @@ export default {
     category_info           :'Information sur les catégories',
     marque_info           :' information sur les marques et les modèles',
     name           :'Nom et prénom ',
-    
+    profession     : 'Profession',
     confirm_password: 'Confirmer le mot de passe',
     types           :'Types de véhicules',
     modeles           :'Modèles',
@@ -92,7 +93,7 @@ export default {
     optionnel         : 'optionnel',
     check_password     : 'Vérifier le mot de passe',
 
-  
+    set_fields : 'Préciser les critères de recherche'
   
   },
 
@@ -140,6 +141,7 @@ export default {
     offer_demand         :   'عرض جديد على الطلب',    
     close                :'إغلاق',
     show_offers     : 'جميع العروض',
+    show_more       : 'إعرض المزيد',
     rows_per_page     : 'صف في الصفحة',
     detail_offer             : "تفاصيل العرض"  ,
     Search_page             : "صفحة البحث"  ,
@@ -178,10 +180,11 @@ export default {
     no_result_found           : "لا توجد طلبات",
     optionnel           : "إختياري (غير ضروري)",
     //
-    contact_info           :'حول الإتصال',
-    category_info           :' حول الأصناف ',
-    marque_info           :'حول العلامات والموديلات',
+    contact_info           :' الإتصال',
+    category_info           :'الأصناف ',
+    marque_info           :' العلامات والموديلات',
     name           :'الإسم',
+    profession     : 'النشاط',
     confirm_password: 'تأكيد كلمة المرور',
     types           :'أنواع المركبات',
     modeles           :'الموديلات',
@@ -191,7 +194,7 @@ export default {
     since         : 'منذ',
     updated       : 'تم حفظ التغييرات ',
     check_password     : 'تأكد من كلمة المرور',
-  
+    set_fields : 'املأ الخانات'
 
   }
 }

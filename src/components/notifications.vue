@@ -75,12 +75,13 @@ import { HTTP } from "../http-constants";
 export default {
   props: ["notifications"],
     data: () => ({
-    read : []
+    read : [],
+    items : []
     }),
   computed: {
-    items() {
-      return this.notifications.notifications;
-    },
+    // items() {
+    //   return this.notifications.notifications;
+    // },
   },
   methods: {
     getRead(){
@@ -129,6 +130,9 @@ export default {
     },
   },
   created(){
+    this.items = this.notifications.notifications
+    if(this.$store.state.wilayas.length === 0)
+          this.$store.dispatch("loadWilayas");
     this.getRead()
   }
 };

@@ -115,6 +115,7 @@
           <v-switch
             v-model="$vuetify.theme.dark"
             :label="$t('dark_mode')"
+            @change="updateDark"
           ></v-switch>
 
           <!-- Language  -->
@@ -334,6 +335,9 @@ export default {
           audio.play();
         });
     },
+    updateDark(){
+      localStorage.setItem("dark" ,this.$vuetify.theme.dark)
+    }
   },
   computed: {
     auth() {
@@ -347,18 +351,23 @@ export default {
     },
   },
   beforeCreate() {
-    if (this.$store.state.auth.authenticated) {
       this.$store.dispatch("loadWilayas");
       this.$store.dispatch("loadEtats");
       this.$store.dispatch("loadTypes");
       this.$store.dispatch("loadContinents");
+      
+    if(localStorage.getItem("dark") ==="true")
+        this.$vuetify.theme.dark = true
+    else  this.$vuetify.theme.dark = false
+    if (this.$store.state.auth.authenticated) {
       this.$i18n.locale = this.$store.state.auth.user.lang;
       this.$vuetify.rtl = this.$store.state.auth.user.lang.rtl;
     }
   },
   created() {
-    this.getNotifications();
+    
     if (this.auth) {
+      this.getNotifications();
       let lang = this.langs.find(
         (item) => item.abr == this.$store.state.auth.user.lang
       );
@@ -367,12 +376,14 @@ export default {
       this.$vuetify.rtl = lang.rtl;
     } else this.initLanguage();
     this.$store.dispatch("auth/login");
-    this.$vuetify.theme.dark = true;
+    // this.$vuetify.theme.dark = true;
   },
 
   mounted() {
     // this.RefreshU();
+    if (this.auth) {
     this.listneres();
+    }
     // setTimeout(()=>{}, 5000);
     //
   },
@@ -380,7 +391,6 @@ export default {
 </script>
  <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Tajawal&display=swap");
-
 .application {
   font-family: "Questrial";
 }

@@ -10,7 +10,7 @@
       ></v-progress-circular>
   </v-row>
   <div class="my-5 px-1">
-    <demande :demande="demande" :detail ="detail" :key="'demande_'+this.$route.params.id"></demande>
+    <demande v-bind:demande="demande" v-bind:detail ="detail" :key="'demande_'+this.$route.params.id"></demande>
   </div>
   </div>
 </template>

@@ -99,12 +99,14 @@ export default {
     }
   },
   computed: {
-    wilayas() {
-      return this.$store.state.wilayas;
-    },
-    etats() {
-      return this.$store.state.etats;
-    },
+    // wilayas() {
+    //   if(this.$store.state.wilayas.length === 0)
+    //       this.$store.dispatch("loadWilayas");
+    //   return this.$store.state.wilayas;
+    // },
+    // etats() {
+    //   return this.$store.state.etats;
+    // },
   },
   created() {
     this.getDemandes();

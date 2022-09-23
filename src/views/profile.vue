@@ -247,7 +247,13 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-btn color="success" class="mx-10" @click.prevent="update()">
+        <v-progress-circular
+                 v-if="loading"
+                 class="mx-10"
+                indeterminate
+                color="success"
+              ></v-progress-circular>
+        <v-btn v-else color="success" class="mx-10" @click.prevent="update()">
           {{ $t("save") }}
         </v-btn>
       </v-card-actions>
@@ -259,6 +265,7 @@ import { HTTP } from "../http-constants";
 export default {
   components: {},
   data: () => ({
+    loading : false,
     nameRules: [(v) => !!v || "Name is required"],
     phoneRules: [
       (v) => !!v || "Phone is required",
@@ -386,21 +393,29 @@ export default {
 
     update() {
       if (this.$refs.form.validate()) {
+        this.loading =true
         HTTP.put("api/user/update/"+this.$store.state.auth.user.id ,  this.user)
           .then((response) => {
             if (response.status == 200) {
               this.$toasted.info(this.$t("updated"), {
                 theme: "bubble",
-                position: "bottom-center",
+                position: "top-center",
                 duration: 5000,
                 keepOnHover: true,
               });
             }
           })
           .catch(() => {
-           
+            this.$toasted.error(this.$t("error"), {
+                theme: "bubble",
+                position: "bottom-center",
+                duration: 5000,
+                keepOnHover: true,
+              });
           })
-          .finally();
+          .finally(()=>{
+            this.loading =false
+          });
       }
     },
   },

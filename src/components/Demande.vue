@@ -288,7 +288,8 @@ export default {
     show: true,
     show_detail: false,
     delete_dialog: false,
-    open : []
+    open : [],
+    
   }),
   computed: {
     sinse() {
@@ -299,9 +300,13 @@ export default {
       return this.demande.demande.user_id === this.$store.state.auth.user.id;
     },
     wilayas() {
+      if(this.$store.state.wilayas.length === 0)
+          this.$store.dispatch("loadWilayas");
       return this.$store.state.wilayas;
     },
     etats() {
+      if(this.$store.state.etats.length === 0)
+          this.$store.dispatch("loadEtats");
       return this.$store.state.etats;
     },
 
