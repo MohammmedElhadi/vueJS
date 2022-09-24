@@ -1,10 +1,9 @@
 <template>
   <div>
-    <v-row v-if="!loading" class="justify-center">
+    <v-row v-if="loading" class="justify-center">
       <v-progress-circular
         :size="70"
         :width="7"
-        v-if="loading"
         color="red"
         indeterminate
       ></v-progress-circular>
