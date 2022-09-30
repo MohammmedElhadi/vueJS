@@ -12,7 +12,7 @@
           <v-card-title>
             <span class="text-h5">{{ $t("new_demand") }} </span>
             <v-spacer />
-            <v-btn icon  @click="$emit('²')">
+            <v-btn icon  @click="$emit('closeDemandeDiaog')">
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>

@@ -45,7 +45,7 @@ export default {
               formData.append(fieldName, file, file.name);
               const request = new XMLHttpRequest();
               // request.open('POST', 'http://auto_parts.local:8080/api/upload');
-              request.open('POST', 'http://safyauto.com'+'/api/upload');
+              request.open('POST', 'https://safyauto.com/api/upload');
               request.withCredentials = true;
               request.setRequestHeader("Accept", "application/json");
               // Should call the progress method to update the progress to 100% before calling load

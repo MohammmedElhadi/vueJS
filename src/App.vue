@@ -291,6 +291,12 @@ export default {
       if (this.auth) {
         this.$i18n.locale = this.user.lang;
       }
+      else{
+          if(localStorage.getItem("lang") ==="fr")
+              this.$i18n.locale  = "fr"
+           else  this.$i18n.locale  = "ar"
+        }
+      
       let lang = this.langs.find((item) => item.abr == this.$i18n.locale);
       this.activeLang = lang.title;
       this.$vuetify.rtl = lang.rtl;
@@ -298,6 +304,7 @@ export default {
     },
     handleMenuItemClick(lang) {
       HTTP.post("api/user/lang", lang).then(() => {});
+      localStorage.setItem('lang' , lang.abr)
       this.activeLang = lang.title;
       this.$i18n.locale = lang.abr;
       this.$vuetify.rtl = lang.rtl;
